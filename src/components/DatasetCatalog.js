@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import DatasetGrid from "./DatasetGrid";
-import DatasetFilters, { matchesFilter } from "./DatasetFilters";
-import FilterDrawer from "./FilterDrawer";
+import DatasetFilters, { matchesFilter } from "./filters/DatasetFilters";
+import FilterDrawer from "./filters/FilterDrawer";
 import ActiveFiltersBar from "./ActiveFiltersBar";
-import ViewControls from "./ViewControls";
+import ViewControls from "./common/ViewControls";
 
 // Updated sample datasets based on the example
 // Updated sample datasets with dataTopic field
