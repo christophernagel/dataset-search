@@ -85,10 +85,6 @@ const UnifiedFilterBar = () => {
               Clear All
             </button>
           )}
-          
-          <div className="unified-result-count">
-            {resultCount} of {totalCount} datasets
-          </div>
         </div>
       </div>
     </div>

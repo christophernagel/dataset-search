@@ -326,30 +326,7 @@ const DatasetFilters = ({ onFilterChange, activeFilters }) => {
 
   return (
     <div className="hdc-filters" role="region" aria-label="Dataset filters">
-      <div className="filter-header">
-        <div className="filter-count">
-          <span>Filter By</span>
-          <span
-            className={`filter-badge ${
-              activeFilterCount === 0 ? "filter-badge-hidden" : ""
-            }`}
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {activeFilterCount || ""}
-          </span>
-        </div>
-        <button
-          onClick={clearFilters}
-          className={`clear-filters ${
-            activeFilterCount === 0 ? "clear-filters-hidden" : ""
-          }`}
-          aria-label="Clear all filters"
-          tabIndex={activeFilterCount === 0 ? "-1" : "0"}
-        >
-          Clear
-        </button>
-      </div>
+ 
       <div className="filter-sections">{renderFilters()}</div>
     </div>
   );

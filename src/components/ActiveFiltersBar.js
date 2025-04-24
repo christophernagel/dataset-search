@@ -115,7 +115,7 @@ const ActiveFiltersBar = () => {
     <div
       className="hdc-active-filters-bar"
       role="region"
-      aria-label="Search and active filters"
+      aria-label="Active filters"
     >
       <span className="hdc-active-filters-label" id="active-filters-label">
         Active Filters:
@@ -158,17 +158,6 @@ const ActiveFiltersBar = () => {
           </div>
         </div>
       )}
-
-      <div className="hdc-search-container">
-        <input
-          type="text"
-          className="hdc-search-input"
-          placeholder="Search datasets..."
-          onChange={handleSearchChange}
-          value={inputValue}
-          aria-label="Search datasets"
-        />
-      </div>
     </div>
   );
 };

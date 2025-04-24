@@ -1,4 +1,4 @@
-// components/search/SearchResults.js
+// Inside SearchResults.js
 import React from "react";
 import DatasetGrid from "../DatasetGrid";
 import DatasetFilters from "../filters/DatasetFilters";
@@ -52,8 +52,6 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
         filters={activeFilters}
         onRemoveFilter={removeFilter}
         onClearFilters={clearFilters}
-        resultCount={searchResults.length}
-        totalCount={searchService.datasets.length}
       />
       
       <div className="search-catalog-layout">
@@ -74,24 +72,14 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
         </div>
         
         <div className="search-catalog-content">
-          <div className="hdc-controls-bar">
-            <div className="hdc-results-info">
-              {searchResults.length === 0 ? (
-                <span>No results found</span>
-              ) : searchQuery ? (
-                <span>Found {searchResults.length} results for "{searchQuery}"</span>
-              ) : (
-                <span>Showing {searchResults.length} datasets</span>
-              )}
-            </div>
-            
-            <ViewControls
-              viewMode={viewMode}
-              onViewChange={setViewMode}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-            />
-          </div>
+          <ViewControls
+            viewMode={viewMode}
+            onViewChange={setViewMode}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            resultCount={searchResults.length}
+            searchQuery={searchQuery}
+          />
           
           {searchResults.length === 0 ? (
             <div className="hdc-search-no-results">
