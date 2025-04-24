@@ -1,17 +1,19 @@
-// App.js
 import React from "react";
 import { FilterProvider } from "./context/FilterContext";
 import { ViewProvider } from "./context/ViewContext";
+import { AppProvider } from "./context/AppContext";
 import AppContent from "./components/AppContent";
 import "./styles.css";
 
 function App() {
   return (
-    <FilterProvider>
-      <ViewProvider>
-        <AppContent />
-      </ViewProvider>
-    </FilterProvider>
+    <AppProvider>
+      <FilterProvider>
+        <ViewProvider>
+          <AppContent />
+        </ViewProvider>
+      </FilterProvider>
+    </AppProvider>
   );
 }
 

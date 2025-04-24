@@ -1,6 +1,3 @@
-// src/services/SearchService.js
-// Simplified version without lunr dependency
-
 class SearchService {
   constructor(datasets) {
     this.datasets = datasets;
@@ -14,87 +11,103 @@ class SearchService {
     }, {});
   }
 
-  // Basic search method without lunr
-  _createSearchIndex(datasets) {
-    // This is a placeholder - we're not using lunr
-    console.log("Search index created without lunr");
-    return null;
+  getSuggestedCategories(query) {
+    if (!query || query.trim() === '') {
+      return [];
+    }
+
+    const lowerQuery = query.toLowerCase();
+    const categories = {};
+    
+    // Find matching datasets and collect their categories
+    this.datasets.forEach(dataset => {
+      if (dataset.communityActionArea &&
+          (dataset.name?.toLowerCase().includes(lowerQuery) ||
+           dataset.description?.toLowerCase().includes(lowerQuery) ||
+           dataset.communityActionArea.toLowerCase().includes(lowerQuery) ||
+           dataset.dataTopic?.toLowerCase().includes(lowerQuery))) {
+        categories[dataset.communityActionArea] = (categories[dataset.communityActionArea] || 0) + 1;
+      }
+    });
+    
+    return Object.entries(categories)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+  }
+
+  getSuggestions(query) {
+    if (!query || query.trim() === '') {
+      return [];
+    }
+    
+    const lowerQuery = query.toLowerCase();
+    const matchedTopics = new Set();
+    const matchedSources = new Set();
+    const matchedCategories = new Set();
+    
+    this.datasets.forEach(dataset => {
+      if (dataset.dataTopic?.toLowerCase().includes(lowerQuery)) {
+        matchedTopics.add(dataset.dataTopic);
+      }
+      
+      if (dataset.source?.toLowerCase().includes(lowerQuery)) {
+        matchedSources.add(dataset.source);
+      }
+      
+      if (dataset.communityActionArea?.toLowerCase().includes(lowerQuery)) {
+        matchedCategories.add(dataset.communityActionArea);
+      }
+    });
+    
+    const matchedNames = this.datasets
+      .filter(dataset => dataset.name.toLowerCase().includes(lowerQuery))
+      .map(dataset => dataset.name);
+    
+    return [
+      ...matchedNames.slice(0, 2),
+      ...Array.from(matchedTopics).slice(0, 1),
+      ...Array.from(matchedSources).slice(0, 1),
+      ...Array.from(matchedCategories).slice(0, 1)
+    ].slice(0, 5);
   }
 
   search(query, filters = {}) {
     if (!query || query.trim() === '') {
-      // Return all datasets if no query
       return this._applyFilters(this.datasets, filters);
     }
     
-    // Basic search without lunr
     const lowerQuery = query.toLowerCase();
-    const results = this.datasets.filter(dataset => {
-      return (
-        (dataset.name && dataset.name.toLowerCase().includes(lowerQuery)) ||
-        (dataset.description && dataset.description.toLowerCase().includes(lowerQuery)) ||
-        (dataset.communityActionArea && dataset.communityActionArea.toLowerCase().includes(lowerQuery)) ||
-        (dataset.source && dataset.source.toLowerCase().includes(lowerQuery)) ||
-        (dataset.dataTopic && dataset.dataTopic.toLowerCase().includes(lowerQuery))
-      );
-    }).map(dataset => {
-      const matchedFields = this._getMatchedFields(dataset, query);
-      const relevanceScore = matchedFields.length / 5; // Simple relevance score
-      
-      return {
-        ...dataset,
-        relevanceScore,
-        normalizedScore: Math.min(relevanceScore, 1),
-        matchedFields
-      };
-    });
+    const results = this.datasets.filter(dataset => (
+      (dataset.name?.toLowerCase().includes(lowerQuery)) ||
+      (dataset.description?.toLowerCase().includes(lowerQuery)) ||
+      (dataset.communityActionArea?.toLowerCase().includes(lowerQuery)) ||
+      (dataset.source?.toLowerCase().includes(lowerQuery)) ||
+      (dataset.dataTopic?.toLowerCase().includes(lowerQuery))
+    ));
     
-    // Apply any filters to the search results
     return this._applyFilters(results, filters);
   }
   
-  _getMatchedFields(dataset, query) {
-    const lowerQuery = query.toLowerCase();
-    const matchedFields = [];
-    
-    if (dataset.name && dataset.name.toLowerCase().includes(lowerQuery)) 
-      matchedFields.push('title');
-    if (dataset.description && dataset.description.toLowerCase().includes(lowerQuery)) 
-      matchedFields.push('description');
-    if (dataset.communityActionArea && dataset.communityActionArea.toLowerCase().includes(lowerQuery)) 
-      matchedFields.push('category');
-    if (dataset.source && dataset.source.toLowerCase().includes(lowerQuery)) 
-      matchedFields.push('source');
-    if (dataset.dataTopic && dataset.dataTopic.toLowerCase().includes(lowerQuery)) 
-      matchedFields.push('topic');
-    
-    return matchedFields;
-  }
-  
   _applyFilters(datasets, filters) {
-    // Handle empty filters
     if (!filters || Object.keys(filters).length === 0) {
       return datasets;
     }
     
     return datasets.filter(dataset => {
       return Object.entries(filters).every(([category, values]) => {
-        // Skip categories with no active values
         if (!values || Object.keys(values).length === 0) {
           return true;
         }
         
-        // Get active values for this category
         const activeValues = Object.entries(values)
           .filter(([_, isActive]) => isActive)
           .map(([value]) => value);
         
-        // Skip if no active values
         if (activeValues.length === 0) {
           return true;
         }
         
-        // Check if the dataset matches any of the active values for this category
         return activeValues.some(value => {
           switch(category) {
             case 'Community Action Areas':
@@ -123,35 +136,16 @@ class SearchService {
     return this.datasetsMap[id];
   }
   
-  getSuggestedCategories(query) {
-    // Return top categories based on search
-    const results = this.search(query);
-    const categories = {};
-    
-    results.forEach(result => {
-      if (result.communityActionArea) {
-        categories[result.communityActionArea] = (categories[result.communityActionArea] || 0) + 1;
-      }
-    });
-    
-    return Object.entries(categories)
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5);
-  }
-  
   getFeaturedDatasets() {
-    // Return up to 4 datasets with diverse community action areas
-    const areas = {};
+    const areas = new Set();
     const featured = [];
     
     for (const dataset of this.datasets) {
       if (featured.length >= 4) break;
       
       const area = dataset.communityActionArea;
-      
-      if (!areas[area]) {
-        areas[area] = true;
+      if (!areas.has(area)) {
+        areas.add(area);
         featured.push(dataset);
       }
     }

@@ -1,8 +1,8 @@
-// components/search/RelatedSuggestions.js
 import React from 'react';
 
 const RelatedSuggestions = ({ query, onSuggestionClick, searchService }) => {
-  // Get suggested categories based on the query
+  if (!query || !searchService) return null;
+  
   const suggestedCategories = searchService.getSuggestedCategories(query);
   
   if (suggestedCategories.length === 0) {
@@ -13,13 +13,15 @@ const RelatedSuggestions = ({ query, onSuggestionClick, searchService }) => {
     <div className="related-suggestions">
       <span className="suggestions-label">Related:</span>
       <div className="suggestions-list">
-        {suggestedCategories.map(category => (
+        {suggestedCategories.map((category, index) => (
           <button
-            key={category.name}
+            key={index}
             className="suggestion-item"
             onClick={() => onSuggestionClick(category.name)}
           >
-            {category.name}
+            <span className="suggestion-text">
+              {category.name} ({category.count})
+            </span>
           </button>
         ))}
       </div>
