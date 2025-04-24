@@ -1,8 +1,9 @@
-// src/App.js - without React Router
+// src/App.js - updated to include SearchResults
 import React, { useEffect, useState } from "react";
 import SearchService from "./services/SearchService";
-import DatasetCatalog from "./components/DatasetCatalog";
 import SearchHome from "./components/home/SearchHome";
+import SearchResults from "./components/search/SearchResults";
+import { sampleDatasets } from "./data/sampleDatasets";
 import "./styles.css";
 
 function App() {
@@ -11,14 +12,8 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Extract the dataset from the original component
-    const extractDatasets = async () => {
-      // For now, just use an empty array if we can't get the data
-      const datasets = window.sampleDatasets || [];
-      setSearchService(new SearchService(datasets));
-    };
-
-    extractDatasets();
+    // Create search service with datasets
+    setSearchService(new SearchService(sampleDatasets));
   }, []);
 
   // Don't render until search service is initialized
@@ -26,10 +21,14 @@ function App() {
     return <div className="loading">Loading...</div>;
   }
 
-  // Simple navigation handler
+  // Navigation handlers
   const handleSearch = (query) => {
     setSearchQuery(query);
     setView("search");
+  };
+
+  const handleNavigateHome = () => {
+    setView("home");
   };
 
   return (
@@ -46,11 +45,11 @@ function App() {
         {view === "home" ? (
           <SearchHome searchService={searchService} onSearch={handleSearch} />
         ) : (
-          <div className="search-results-placeholder">
-            <h2>Search Results for: {searchQuery}</h2>
-            <p>Search functionality is under development.</p>
-            <button onClick={() => setView("home")}>Back to Home</button>
-          </div>
+          <SearchResults 
+            searchService={searchService} 
+            initialQuery={searchQuery} 
+            onNavigateHome={handleNavigateHome}
+          />
         )}
       </main>
 

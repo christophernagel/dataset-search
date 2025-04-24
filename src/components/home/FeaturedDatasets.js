@@ -16,7 +16,10 @@ const FeaturedDatasets = ({ datasets }) => {
             {dataset.communityActionArea}
           </span>
           <h3 className="featured-dataset-title">
-            <Link to={`/dataset/${dataset.id}`}>{dataset.name}</Link>
+            {/* Replace Link with a regular anchor tag for now */}
+            <a href={dataset.pageUrl || "#"} className="featured-dataset-title-link">
+              {dataset.name}
+            </a>
           </h3>
           <p className="featured-dataset-description">{dataset.description}</p>
           <div className="featured-dataset-source">Source: {dataset.source}</div>

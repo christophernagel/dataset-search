@@ -1,53 +1,40 @@
+// src/components/search/SearchResults.js
 import React, { useState, useEffect } from "react";
-import { SearchService } from "../services/SearchService";
-import DatasetGrid from "./DatasetGrid";
-import UnifiedFilterBar from "./filters/UnifiedFilterBar";
-import ViewControls from "./common/ViewControls";
+import DatasetGrid from "../DatasetGrid";
+import DatasetFilters from "../filters/DatasetFilters";
+import FilterDrawer from "../filters/FilterDrawer";
+import UnifiedFilterBar from "../filters/UnifiedFilterBar";
+import ViewControls from "../common/ViewControls";
+import SearchBar from "../home/SearchBar";
+import RelatedSuggestions from "./RelatedSuggestions";
 
-const SearchResults = ({ initialQuery = "" }) => {
+const SearchResults = ({ searchService, initialQuery = "", onNavigateHome }) => {
   // State management
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeFilters, setActiveFilters] = useState({});
-  const [availableFilters, setAvailableFilters] = useState({});
   const [viewMode, setViewMode] = useState("grid");
   const [sortBy, setSortBy] = useState("relevance");
-  const [resultsStats, setResultsStats] = useState({
-    total: 0,
-    filtered: 0
-  });
 
-  // Effect to perform search when query changes
+  // Perform search when query or filters change
   useEffect(() => {
     if (searchQuery.trim()) {
-      performSearch(searchQuery);
+      performSearch(searchQuery, activeFilters);
     } else {
-      // If no query, show all datasets (or featured ones)
-      setSearchResults([]);
-      // You might want to fetch all datasets or featured ones here
+      // If no query, show all datasets
+      const datasets = searchService.getFilteredDatasets(activeFilters);
+      setSearchResults(datasets);
     }
-  }, [searchQuery]);
+  }, [searchQuery, activeFilters, searchService]);
 
   // Handle search execution
-  const performSearch = async (query) => {
+  const performSearch = (query, filters) => {
     setLoading(true);
     try {
       // Use the SearchService to get search results
-      const results = await SearchService.search(query);
-      
-      // Process search results
+      const results = searchService.search(query, filters);
       setSearchResults(results);
-      
-      // Generate available filters based on results
-      const filters = SearchService.generateFiltersFromResults(results);
-      setAvailableFilters(filters);
-      
-      // Update stats
-      setResultsStats({
-        total: results.length,
-        filtered: results.length
-      });
     } catch (error) {
       console.error("Search error:", error);
       // Handle error state
@@ -56,119 +43,135 @@ const SearchResults = ({ initialQuery = "" }) => {
     }
   };
 
-  // Handle filter changes
-  const handleFilterChange = (newFilters) => {
-    setActiveFilters(newFilters);
-    
-    // Apply filters to search results
-    const filtered = searchResults.filter(result => 
-      SearchService.matchesFilters(result, newFilters)
-    );
-    
-    // Update stats
-    setResultsStats({
-      ...resultsStats,
-      filtered: filtered.length
-    });
-  };
-
-  // Handle search query updates
-  const handleSearchChange = (query) => {
+  // Handle new search
+  const handleSearch = (query) => {
     setSearchQuery(query);
   };
 
-  // Handle view mode changes
+  // Filter handlers
+  const handleFilterChange = (newFilters) => {
+    setActiveFilters(newFilters);
+  };
+
+  const handleRemoveFilter = (category, value) => {
+    const newFilters = { ...activeFilters };
+    if (newFilters[category]) {
+      delete newFilters[category][value];
+      if (Object.keys(newFilters[category]).length === 0) {
+        delete newFilters[category];
+      }
+    }
+    setActiveFilters(newFilters);
+  };
+
+  const handleClearFilters = () => {
+    setActiveFilters({});
+  };
+
+  // View controls handlers
   const handleViewChange = (mode) => {
     setViewMode(mode);
   };
 
-  // Handle sort changes
   const handleSortChange = (sort) => {
     setSortBy(sort);
     
-    // Sort the results
-    const sorted = [...searchResults].sort((a, b) => {
-      if (sort === "relevance") {
-        return b.relevanceScore - a.relevanceScore;
-      } else if (sort === "date") {
-        return new Date(b.dateUpdated || 0) - new Date(a.dateUpdated || 0);
-      } else if (sort === "name") {
-        return a.name.localeCompare(b.name);
-      }
-      return 0;
-    });
+    // Apply sorting to search results
+    const sortedResults = [...searchResults];
     
-    setSearchResults(sorted);
-  };
-
-  // Filter search results based on active filters
-  const getFilteredResults = () => {
-    if (Object.keys(activeFilters).length === 0) {
-      return searchResults;
+    if (sort === "date") {
+      sortedResults.sort((a, b) => {
+        const dateA = a.dateUpdated ? new Date(a.dateUpdated) : new Date(0);
+        const dateB = b.dateUpdated ? new Date(b.dateUpdated) : new Date(0);
+        return dateB - dateA; // Most recent first
+      });
+    } else if (sort === "name") {
+      sortedResults.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sort === "relevance" && searchQuery.trim()) {
+      // For relevance, results are already sorted by the search service
+      // But make sure items with relevanceScore come first
+      sortedResults.sort((a, b) => {
+        if (a.relevanceScore !== undefined && b.relevanceScore !== undefined) {
+          return b.relevanceScore - a.relevanceScore;
+        }
+        return a.relevanceScore !== undefined ? -1 : 1;
+      });
     }
     
-    return searchResults.filter(result => 
-      SearchService.matchesFilters(result, activeFilters)
-    );
+    setSearchResults(sortedResults);
   };
 
   return (
-    <div className="hdc-search-results">
-      <div className="hdc-search-results-layout">
-        {/* Sidebar filters */}
-        <div className="hdc-search-filters-sidebar">
-          {/* Once you have filter components ready */}
-          {/* <SearchFilters 
-            availableFilters={availableFilters}
-            activeFilters={activeFilters}
-            onFilterChange={handleFilterChange}
-          /> */}
+    <div className="search-catalog">
+      {/* Search Bar Header */}
+      <div className="search-catalog-header">
+        <SearchBar 
+          onSearch={handleSearch} 
+          initialQuery={searchQuery}
+          compact={true}
+        />
+        
+        {searchQuery && (
+          <RelatedSuggestions 
+            query={searchQuery}
+            onSuggestionClick={handleSearch}
+            searchService={searchService}
+          />
+        )}
+      </div>
+      
+      {/* Unified Filter Bar */}
+      <UnifiedFilterBar
+        filters={activeFilters}
+        onRemoveFilter={handleRemoveFilter}
+        onClearFilters={handleClearFilters}
+        resultCount={searchResults.length}
+        totalCount={searchService.datasets ? searchService.datasets.length : 0}
+      />
+      
+      <div className="search-catalog-layout">
+        {/* Mobile Filters */}
+        <div className="mobile-filters">
+          <FilterDrawer>
+            <DatasetFilters
+              onFilterChange={handleFilterChange}
+              activeFilters={activeFilters}
+            />
+          </FilterDrawer>
         </div>
         
-        <div className="hdc-search-results-content">
-          {/* Search bar with query */}
-          <div className="hdc-search-header">
-            <UnifiedFilterBar 
-              filters={activeFilters}
-              onRemoveFilter={(category, value) => {
-                const newFilters = { ...activeFilters };
-                if (newFilters[category]) {
-                  delete newFilters[category][value];
-                  if (Object.keys(newFilters[category]).length === 0) {
-                    delete newFilters[category];
-                  }
-                }
-                setActiveFilters(newFilters);
-              }}
-              onSearch={handleSearchChange}
-              searchQuery={searchQuery}
-            />
-          </div>
-          
-          {/* Results info and view controls */}
-          <div className="hdc-search-controls-bar">
+        {/* Desktop Filters */}
+        <div className="desktop-filters">
+          <DatasetFilters
+            onFilterChange={handleFilterChange}
+            activeFilters={activeFilters}
+          />
+        </div>
+        
+        <div className="search-catalog-content">
+          {/* View Controls Bar */}
+          <div className="hdc-controls-bar">
             <div className="hdc-results-info">
               {loading ? (
-                "Searching..."
+                <span>Searching...</span>
+              ) : searchResults.length === 0 ? (
+                <span>No results found</span>
+              ) : searchQuery ? (
+                <span>
+                  Found {searchResults.length} results for "{searchQuery}"
+                </span>
               ) : (
-                `${resultsStats.filtered} ${
-                  resultsStats.filtered === 1 ? "dataset" : "datasets"
-                } found${
-                  searchQuery ? ` for "${searchQuery}"` : ""
-                }`
+                <span>
+                  Showing {searchResults.length} datasets
+                </span>
               )}
             </div>
             
-            <ViewControls 
+            <ViewControls
               viewMode={viewMode}
               onViewChange={handleViewChange}
               sortBy={sortBy}
               onSortChange={handleSortChange}
-              sortOptions={[
-                { value: "relevance", label: "Relevance" },
-                { value: "date", label: "Date updated" },
-                { value: "name", label: "Name" }
-              ]}
             />
           </div>
           
@@ -176,7 +179,6 @@ const SearchResults = ({ initialQuery = "" }) => {
           {loading ? (
             <div className="hdc-search-loading">
               <p>Searching for datasets...</p>
-              {/* You could add a spinner here */}
             </div>
           ) : searchResults.length === 0 ? (
             <div className="hdc-search-no-results">
@@ -195,12 +197,17 @@ const SearchResults = ({ initialQuery = "" }) => {
                   <li>Browse all datasets by category</li>
                 </ul>
               </div>
+              <button 
+                className="back-to-home-button"
+                onClick={onNavigateHome}
+              >
+                Back to Home
+              </button>
             </div>
           ) : (
             <DatasetGrid 
-              datasets={getFilteredResults()}
+              datasets={searchResults}
               viewMode={viewMode}
-              showRelevance={sortBy === "relevance" && searchQuery.trim() !== ""}
             />
           )}
         </div>
