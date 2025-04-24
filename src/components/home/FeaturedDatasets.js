@@ -1,7 +1,19 @@
-// src/components/home/FeaturedDatasets.js
+// components/home/FeaturedDatasets.js
 import React from 'react';
 
 const FeaturedDatasets = ({ datasets }) => {
+  const getCategoryColor = (category) => {
+    const colors = {
+      "Promoting Healthy Child Development": "#FF6B6B",
+      "Youth Development and Civic Engagement": "#4ECDC4",
+      "Creating Protective Environments": "#45B7D1",
+      "Strengthening Economic Supports for Children and Families": "#98D85B",
+      "Access to Safe and Stable Housing": "#FFD166",
+      "Demographic Data": "#6A0572"
+    };
+    return colors[category] || "#808080";
+  };
+
   return (
     <div className="featured-datasets">
       {datasets.map(dataset => (
@@ -16,7 +28,6 @@ const FeaturedDatasets = ({ datasets }) => {
             {dataset.communityActionArea}
           </span>
           <h3 className="featured-dataset-title">
-            {/* Replace Link with a regular anchor tag for now */}
             <a href={dataset.pageUrl || "#"} className="featured-dataset-title-link">
               {dataset.name}
             </a>
@@ -27,20 +38,6 @@ const FeaturedDatasets = ({ datasets }) => {
       ))}
     </div>
   );
-};
-
-// Helper function to get color for community action area
-const getCategoryColor = (category) => {
-  const colors = {
-    "Promoting Healthy Child Development": "#FF6B6B",
-    "Youth Development and Civic Engagement": "#4ECDC4",
-    "Creating Protective Environments": "#45B7D1",
-    "Strengthening Economic Supports for Children and Families": "#98D85B",
-    "Access to Safe and Stable Housing": "#FFD166",
-    "Demographic Data": "#6A0572"
-  };
-  
-  return colors[category] || "#808080";
 };
 
 export default FeaturedDatasets;

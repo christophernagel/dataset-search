@@ -1,16 +1,20 @@
-// src/components/filters/UnifiedFilterBar.js
+// components/filters/UnifiedFilterBar.js
 import React from "react";
+import { useFilters } from "../../context/FilterContext";
 
-const UnifiedFilterBar = ({ 
-  filters, 
-  onRemoveFilter, 
-  onClearFilters,
-  resultCount,
-  totalCount
-}) => {
+const UnifiedFilterBar = () => { 
+  const { 
+    filters, 
+    activeFilters,
+    removeFilter,
+    clearFilters,
+    resultCount,
+    totalCount
+  } = useFilters();
+
   const getActiveFilters = () => {
     const active = [];
-    Object.entries(filters).forEach(([category, values]) => {
+    Object.entries(activeFilters).forEach(([category, values]) => {
       Object.entries(values).forEach(([value, isActive]) => {
         if (isActive) {
           active.push({ category, value });
@@ -20,8 +24,8 @@ const UnifiedFilterBar = ({
     return active;
   };
 
-  const activeFilters = getActiveFilters();
-  const hasActiveFilters = activeFilters.length > 0;
+  const activeFiltersList = getActiveFilters();
+  const hasActiveFilters = activeFiltersList.length > 0;
 
   return (
     <div 
@@ -41,15 +45,15 @@ const UnifiedFilterBar = ({
               role="group"
               aria-labelledby="active-filters-label"
             >
-              {activeFilters.map(({ category, value }, index) => (
+              {activeFiltersList.map(({ category, value }, index) => (
                 <button
                   key={`${category}-${value}`}
                   className="unified-filter-tag"
-                  onClick={() => onRemoveFilter(category, value)}
+                  onClick={() => removeFilter(category, value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      onRemoveFilter(category, value);
+                      removeFilter(category, value);
                     }
                   }}
                   aria-label={`Remove filter ${category}: ${value}`}
@@ -75,7 +79,7 @@ const UnifiedFilterBar = ({
           {hasActiveFilters && (
             <button 
               className="unified-clear-filters"
-              onClick={onClearFilters}
+              onClick={clearFilters}
               aria-label="Clear all filters"
             >
               Clear All
@@ -91,4 +95,4 @@ const UnifiedFilterBar = ({
   );
 };
 
-export default UnifiedFilterBar;
+export default React.memo(UnifiedFilterBar);

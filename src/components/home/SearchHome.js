@@ -1,15 +1,16 @@
-// src/components/home/SearchHome.js - without React Router
+// components/home/SearchHome.js
 import React from 'react';
 import SearchBar from './SearchBar';
 import CategoryChips from './CategoryChips';
 import FeaturedDatasets from './FeaturedDatasets';
+import { useFilters } from '../../context/FilterContext';
 
 const SearchHome = ({ searchService, onSearch }) => {
-  // Use the onSearch prop instead of router navigation
+  const { setSearchQuery } = useFilters();
+
   const handleSearch = (query) => {
-    if (query.trim()) {
-      onSearch(query);
-    }
+    setSearchQuery(query);
+    onSearch(query);
   };
   
   const categories = [
@@ -21,8 +22,6 @@ const SearchHome = ({ searchService, onSearch }) => {
     { name: "Demographic Data", color: "#6A0572" },
   ];
   
-  const featuredDatasets = searchService.getFeaturedDatasets();
-  
   return (
     <div className="search-home">
       <div className="search-home-container">
@@ -33,7 +32,10 @@ const SearchHome = ({ searchService, onSearch }) => {
         
         <SearchBar onSearch={handleSearch} />
         
-        <CategoryChips categories={categories} onSelectCategory={(cat) => handleSearch(cat.name)} />
+        <CategoryChips 
+          categories={categories} 
+          onSelectCategory={(cat) => handleSearch(cat.name)} 
+        />
         
         <div className="search-home-stats">
           <div className="stat-item">
@@ -52,7 +54,7 @@ const SearchHome = ({ searchService, onSearch }) => {
         
         <div className="featured-datasets-section">
           <h2 className="section-title">Featured Datasets</h2>
-          <FeaturedDatasets datasets={featuredDatasets} />
+          <FeaturedDatasets datasets={searchService.getFeaturedDatasets()} />
         </div>
       </div>
     </div>

@@ -1,18 +1,14 @@
-// src/components/DatasetGrid.js
-import React from "react";
+import React, { useCallback } from "react";
 import DatasetCard from "./common/DatasetCard";
+import { useWindowSize } from "../hooks/useWindowSize";
+import { useView } from "../context/ViewContext";
 
-// Color mapping for Community Action Areas
-const communityActionAreaColors = {
-  "Promoting Healthy Child Development": "#FF6B6B",
-  "Youth Development and Civic Engagement": "#4ECDC4",
-  "Creating Protective Environments": "#45B7D1",
-  "Strengthening Economic Supports for Children and Families": "#98D85B",
-  "Access to Safe and Stable Housing": "#FFD166",
-  "Demographic Data": "#6A0572",
-};
+const ITEMS_PER_PAGE = 20;
 
-const DatasetGrid = ({ datasets, viewMode = "grid" }) => {
+const DatasetGrid = ({ datasets }) => {
+  const { viewMode } = useView();
+  const { width } = useWindowSize();
+
   // If no datasets match, show empty message
   if (datasets.length === 0) {
     return (
@@ -22,51 +18,14 @@ const DatasetGrid = ({ datasets, viewMode = "grid" }) => {
     );
   }
 
-  // For search results, don't group by area if there's a search query
-  // We'll assume that if any dataset has a relevanceScore, we're in search mode
-  const isSearchMode = datasets.some(dataset => 'relevanceScore' in dataset);
+  // Calculate grid columns based on viewport width
+  const getGridColumns = useCallback(() => {
+    if (width < 768) return 1;
+    if (width < 1024) return 2;
+    if (width < 1280) return 3;
+    return 4;
+  }, [width]);
 
-  if (isSearchMode) {
-    return (
-      <div className={`hdc-dataset-container ${viewMode}-view`}>
-        <div className="dataset-category-section">
-          <h2 className="category-header search-results-header">
-            Search Results
-          </h2>
-
-          {viewMode === "grid" && (
-            <div className="datasets-grid">
-              {datasets.map((dataset) => (
-                <DatasetCard key={dataset.id} {...dataset} />
-              ))}
-            </div>
-          )}
-
-          {viewMode === "list" && (
-            <ul className="datasets-list">
-              {datasets.map((dataset) => (
-                <li key={dataset.id} className="dataset-list-item">
-                  <DatasetCard {...dataset} />
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {viewMode === "detail" && (
-            <div className="datasets-detail">
-              {datasets.map((dataset) => (
-                <div key={dataset.id} className="dataset-detail-item">
-                  <DatasetCard {...dataset} />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // If not search mode, group by community action area (original behavior)
   // Group datasets by Community Action Area
   const groupedDatasets = {};
   datasets.forEach((dataset) => {
@@ -77,7 +36,7 @@ const DatasetGrid = ({ datasets, viewMode = "grid" }) => {
     groupedDatasets[area].push(dataset);
   });
 
-  // Community Action Areas order
+  // Sort areas by predefined order
   const areaOrder = [
     "Promoting Healthy Child Development",
     "Youth Development and Civic Engagement",
@@ -88,12 +47,62 @@ const DatasetGrid = ({ datasets, viewMode = "grid" }) => {
     "Other",
   ];
 
-  // Sort sections by the defined order
   const sortedAreas = Object.keys(groupedDatasets).sort((a, b) => {
     const indexA = areaOrder.indexOf(a);
     const indexB = areaOrder.indexOf(b);
     return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
   });
+
+  // Get color for community action area
+  const getAreaColor = (area) => {
+    const colors = {
+      "Promoting Healthy Child Development": "#FF6B6B",
+      "Youth Development and Civic Engagement": "#4ECDC4",
+      "Creating Protective Environments": "#45B7D1",
+      "Strengthening Economic Supports for Children and Families": "#98D85B",
+      "Access to Safe and Stable Housing": "#FFD166",
+      "Demographic Data": "#6A0572",
+    };
+    return colors[area] || "#808080";
+  };
+
+  // Render grid view
+  const renderGridView = (datasets) => (
+    <div 
+      className="datasets-grid"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${getGridColumns()}, 1fr)`,
+        gap: '16px'
+      }}
+    >
+      {datasets.map((dataset) => (
+        <DatasetCard key={dataset.id} {...dataset} />
+      ))}
+    </div>
+  );
+
+  // Render list view
+  const renderListView = (datasets) => (
+    <ul className="datasets-list">
+      {datasets.map((dataset) => (
+        <li key={dataset.id} className="dataset-list-item">
+          <DatasetCard {...dataset} />
+        </li>
+      ))}
+    </ul>
+  );
+
+  // Render detail view
+  const renderDetailView = (datasets) => (
+    <div className="datasets-detail">
+      {datasets.map((dataset) => (
+        <div key={dataset.id} className="dataset-detail-item">
+          <DatasetCard {...dataset} />
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className={`hdc-dataset-container ${viewMode}-view`}>
@@ -103,43 +112,19 @@ const DatasetGrid = ({ datasets, viewMode = "grid" }) => {
             className="category-header"
             data-area={area}
             style={{
-              borderLeftColor: communityActionAreaColors[area] || "#808080",
+              borderLeftColor: getAreaColor(area),
             }}
           >
             {area}
           </h2>
 
-          {viewMode === "grid" && (
-            <div className="datasets-grid">
-              {groupedDatasets[area].map((dataset) => (
-                <DatasetCard key={dataset.id} {...dataset} />
-              ))}
-            </div>
-          )}
-
-          {viewMode === "list" && (
-            <ul className="datasets-list">
-              {groupedDatasets[area].map((dataset) => (
-                <li key={dataset.id} className="dataset-list-item">
-                  <DatasetCard {...dataset} />
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {viewMode === "detail" && (
-            <div className="datasets-detail">
-              {groupedDatasets[area].map((dataset) => (
-                <div key={dataset.id} className="dataset-detail-item">
-                  <DatasetCard {...dataset} />
-                </div>
-              ))}
-            </div>
-          )}
+          {viewMode === "grid" && renderGridView(groupedDatasets[area])}
+          {viewMode === "list" && renderListView(groupedDatasets[area])}
+          {viewMode === "detail" && renderDetailView(groupedDatasets[area])}
         </div>
       ))}
     </div>
   );
 };
 
-export default DatasetGrid;
+export default React.memo(DatasetGrid);

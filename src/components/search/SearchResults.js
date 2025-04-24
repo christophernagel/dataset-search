@@ -1,5 +1,5 @@
-// src/components/search/SearchResults.js
-import React, { useState, useEffect } from "react";
+// components/search/SearchResults.js
+import React from "react";
 import DatasetGrid from "../DatasetGrid";
 import DatasetFilters from "../filters/DatasetFilters";
 import FilterDrawer from "../filters/FilterDrawer";
@@ -7,106 +7,34 @@ import UnifiedFilterBar from "../filters/UnifiedFilterBar";
 import ViewControls from "../common/ViewControls";
 import SearchBar from "../home/SearchBar";
 import RelatedSuggestions from "./RelatedSuggestions";
+import { useFilters } from "../../context/FilterContext";
+import { useView } from "../../context/ViewContext";
 
-const SearchResults = ({ searchService, initialQuery = "", onNavigateHome }) => {
-  // State management
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [searchResults, setSearchResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [activeFilters, setActiveFilters] = useState({});
-  const [viewMode, setViewMode] = useState("grid");
-  const [sortBy, setSortBy] = useState("relevance");
+const SearchResults = ({ searchService, onNavigateHome }) => {
+  const {
+    activeFilters,
+    searchQuery,
+    setSearchQuery,
+    setFilters,
+    removeFilter,
+    clearFilters
+  } = useFilters();
+  
+  const { viewMode, sortBy, setViewMode, setSortBy } = useView();
 
-  // Perform search when query or filters change
-  useEffect(() => {
+  // Get search results
+  const searchResults = React.useMemo(() => {
     if (searchQuery.trim()) {
-      performSearch(searchQuery, activeFilters);
-    } else {
-      // If no query, show all datasets
-      const datasets = searchService.getFilteredDatasets(activeFilters);
-      setSearchResults(datasets);
+      return searchService.search(searchQuery, activeFilters);
     }
-  }, [searchQuery, activeFilters, searchService]);
-
-  // Handle search execution
-  const performSearch = (query, filters) => {
-    setLoading(true);
-    try {
-      // Use the SearchService to get search results
-      const results = searchService.search(query, filters);
-      setSearchResults(results);
-    } catch (error) {
-      console.error("Search error:", error);
-      // Handle error state
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle new search
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-  };
-
-  // Filter handlers
-  const handleFilterChange = (newFilters) => {
-    setActiveFilters(newFilters);
-  };
-
-  const handleRemoveFilter = (category, value) => {
-    const newFilters = { ...activeFilters };
-    if (newFilters[category]) {
-      delete newFilters[category][value];
-      if (Object.keys(newFilters[category]).length === 0) {
-        delete newFilters[category];
-      }
-    }
-    setActiveFilters(newFilters);
-  };
-
-  const handleClearFilters = () => {
-    setActiveFilters({});
-  };
-
-  // View controls handlers
-  const handleViewChange = (mode) => {
-    setViewMode(mode);
-  };
-
-  const handleSortChange = (sort) => {
-    setSortBy(sort);
-    
-    // Apply sorting to search results
-    const sortedResults = [...searchResults];
-    
-    if (sort === "date") {
-      sortedResults.sort((a, b) => {
-        const dateA = a.dateUpdated ? new Date(a.dateUpdated) : new Date(0);
-        const dateB = b.dateUpdated ? new Date(b.dateUpdated) : new Date(0);
-        return dateB - dateA; // Most recent first
-      });
-    } else if (sort === "name") {
-      sortedResults.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sort === "relevance" && searchQuery.trim()) {
-      // For relevance, results are already sorted by the search service
-      // But make sure items with relevanceScore come first
-      sortedResults.sort((a, b) => {
-        if (a.relevanceScore !== undefined && b.relevanceScore !== undefined) {
-          return b.relevanceScore - a.relevanceScore;
-        }
-        return a.relevanceScore !== undefined ? -1 : 1;
-      });
-    }
-    
-    setSearchResults(sortedResults);
-  };
+    return searchService.getFilteredDatasets(activeFilters);
+  }, [searchService, searchQuery, activeFilters]);
 
   return (
     <div className="search-catalog">
-      {/* Search Bar Header */}
       <div className="search-catalog-header">
         <SearchBar 
-          onSearch={handleSearch} 
+          onSearch={setSearchQuery} 
           initialQuery={searchQuery}
           compact={true}
         />
@@ -114,73 +42,58 @@ const SearchResults = ({ searchService, initialQuery = "", onNavigateHome }) => 
         {searchQuery && (
           <RelatedSuggestions 
             query={searchQuery}
-            onSuggestionClick={handleSearch}
+            onSuggestionClick={setSearchQuery}
             searchService={searchService}
           />
         )}
       </div>
       
-      {/* Unified Filter Bar */}
       <UnifiedFilterBar
         filters={activeFilters}
-        onRemoveFilter={handleRemoveFilter}
-        onClearFilters={handleClearFilters}
+        onRemoveFilter={removeFilter}
+        onClearFilters={clearFilters}
         resultCount={searchResults.length}
-        totalCount={searchService.datasets ? searchService.datasets.length : 0}
+        totalCount={searchService.datasets.length}
       />
       
       <div className="search-catalog-layout">
-        {/* Mobile Filters */}
         <div className="mobile-filters">
           <FilterDrawer>
             <DatasetFilters
-              onFilterChange={handleFilterChange}
+              onFilterChange={setFilters}
               activeFilters={activeFilters}
             />
           </FilterDrawer>
         </div>
         
-        {/* Desktop Filters */}
         <div className="desktop-filters">
           <DatasetFilters
-            onFilterChange={handleFilterChange}
+            onFilterChange={setFilters}
             activeFilters={activeFilters}
           />
         </div>
         
         <div className="search-catalog-content">
-          {/* View Controls Bar */}
           <div className="hdc-controls-bar">
             <div className="hdc-results-info">
-              {loading ? (
-                <span>Searching...</span>
-              ) : searchResults.length === 0 ? (
+              {searchResults.length === 0 ? (
                 <span>No results found</span>
               ) : searchQuery ? (
-                <span>
-                  Found {searchResults.length} results for "{searchQuery}"
-                </span>
+                <span>Found {searchResults.length} results for "{searchQuery}"</span>
               ) : (
-                <span>
-                  Showing {searchResults.length} datasets
-                </span>
+                <span>Showing {searchResults.length} datasets</span>
               )}
             </div>
             
             <ViewControls
               viewMode={viewMode}
-              onViewChange={handleViewChange}
+              onViewChange={setViewMode}
               sortBy={sortBy}
-              onSortChange={handleSortChange}
+              onSortChange={setSortBy}
             />
           </div>
           
-          {/* Show results or loading state */}
-          {loading ? (
-            <div className="hdc-search-loading">
-              <p>Searching for datasets...</p>
-            </div>
-          ) : searchResults.length === 0 ? (
+          {searchResults.length === 0 ? (
             <div className="hdc-search-no-results">
               <h2>No datasets found</h2>
               <p>

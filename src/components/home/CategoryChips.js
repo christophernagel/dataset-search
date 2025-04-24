@@ -1,4 +1,4 @@
-// src/components/home/CategoryChips.js
+// components/home/CategoryChips.js
 import React from 'react';
 
 const CategoryChips = ({ categories, onSelectCategory }) => {
@@ -12,7 +12,7 @@ const CategoryChips = ({ categories, onSelectCategory }) => {
             className="category-chip"
             onClick={() => onSelectCategory(category)}
             style={{ 
-              backgroundColor: `${category.color}20`, // 20% opacity
+              backgroundColor: `${category.color}20`,
               borderColor: category.color 
             }}
           >

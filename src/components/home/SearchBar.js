@@ -1,4 +1,4 @@
-// src/components/home/SearchBar.js
+// components/home/SearchBar.js
 import React, { useState } from 'react';
 
 const SearchBar = ({ onSearch, compact = false }) => {

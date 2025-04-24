@@ -1,4 +1,4 @@
-// src/components/search/RelatedSuggestions.js
+// components/search/RelatedSuggestions.js
 import React from 'react';
 
 const RelatedSuggestions = ({ query, onSuggestionClick, searchService }) => {
