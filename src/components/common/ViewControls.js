@@ -1,20 +1,28 @@
 import React from "react";
 
-const ViewControls = ({ viewMode, onViewChange, sortBy, onSortChange, resultCount, searchQuery }) => {
-  const resultText = searchQuery 
+const ViewControls = ({
+  viewMode,
+  onViewChange,
+  sortBy,
+  onSortChange,
+  resultCount,
+  searchQuery,
+}) => {
+  const resultText = searchQuery
     ? `Found ${resultCount} results for "${searchQuery}"`
     : `Showing ${resultCount} datasets`;
 
   return (
-    <div className="hdc-controls-section" role="region" aria-label="View controls">
+    <div
+      className="hdc-controls-section"
+      role="region"
+      aria-label="View controls"
+    >
       <div className="hdc-controls-header">
         <div className="hdc-controls-left">
-          <h2 className="hdc-section-title">Search Results</h2>
-          <div className="hdc-results-info">
-            {resultText}
-          </div>
+          <div className="hdc-results-info">{resultText}</div>
         </div>
-        
+
         <div className="hdc-controls-right">
           <span className="hdc-sort-label">Sort by:</span>
           <select
@@ -30,7 +38,9 @@ const ViewControls = ({ viewMode, onViewChange, sortBy, onSortChange, resultCoun
 
           <div className="hdc-display-controls">
             <button
-              className={`hdc-view-button ${viewMode === "grid" ? "active" : ""}`}
+              className={`hdc-view-button ${
+                viewMode === "grid" ? "active" : ""
+              }`}
               onClick={() => onViewChange("grid")}
               aria-label="Grid view"
               aria-pressed={viewMode === "grid"}
@@ -53,7 +63,9 @@ const ViewControls = ({ viewMode, onViewChange, sortBy, onSortChange, resultCoun
               </svg>
             </button>
             <button
-              className={`hdc-view-button ${viewMode === "detail" ? "active" : ""}`}
+              className={`hdc-view-button ${
+                viewMode === "detail" ? "active" : ""
+              }`}
               onClick={() => onViewChange("detail")}
               aria-label="Detailed view"
               aria-pressed={viewMode === "detail"}
