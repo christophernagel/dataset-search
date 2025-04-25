@@ -1,4 +1,3 @@
-// Inside SearchResults.js
 import React from "react";
 import DatasetGrid from "../DatasetGrid";
 import DatasetFilters from "../filters/DatasetFilters";

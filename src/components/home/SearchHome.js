@@ -1,9 +1,10 @@
 // components/home/SearchHome.js
-import React from 'react';
-import SearchBar from './SearchBar';
-import CategoryChips from './CategoryChips';
-import FeaturedDatasets from './FeaturedDatasets';
-import { useFilters } from '../../context/FilterContext';
+import React from "react";
+import SearchBar from "./SearchBar";
+import CategoryChips from "./CategoryChips";
+import FeaturedDatasets from "./FeaturedDatasets";
+import { useFilters } from "../../context/FilterContext";
+import { useApp } from "../../context/AppContext";
 
 const SearchHome = ({ searchService, onSearch }) => {
   const { setSearchQuery } = useFilters();
@@ -12,16 +13,30 @@ const SearchHome = ({ searchService, onSearch }) => {
     setSearchQuery(query);
     onSearch(query);
   };
-  
+
+  const handleViewAllDatasets = () => {
+    // Navigate to search results with empty query to show all datasets
+    setSearchQuery("");
+    onSearch("");
+  };
+
+  const handleSelectCategory = (category) => {
+    // Search by category
+    handleSearch(category.name);
+  };
+
   const categories = [
     { name: "Promoting Healthy Child Development", color: "#FF6B6B" },
     { name: "Youth Development and Civic Engagement", color: "#4ECDC4" },
     { name: "Creating Protective Environments", color: "#45B7D1" },
-    { name: "Strengthening Economic Supports for Children and Families", color: "#98D85B" },
+    {
+      name: "Strengthening Economic Supports for Children and Families",
+      color: "#98D85B",
+    },
     { name: "Access to Safe and Stable Housing", color: "#FFD166" },
     { name: "Demographic Data", color: "#6A0572" },
   ];
-  
+
   return (
     <div className="search-home">
       <div className="search-home-container">
@@ -29,14 +44,14 @@ const SearchHome = ({ searchService, onSearch }) => {
         <p className="search-home-description">
           Find and explore healthcare and community data from various sources
         </p>
-        
+
         <SearchBar onSearch={handleSearch} />
-        
-        <CategoryChips 
-          categories={categories} 
-          onSelectCategory={(cat) => handleSearch(cat.name)} 
+
+        <CategoryChips
+          categories={categories}
+          onSelectCategory={handleSelectCategory}
         />
-        
+
         <div className="search-home-stats">
           <div className="stat-item">
             <div className="stat-number">{searchService.datasets.length}</div>
@@ -51,11 +66,11 @@ const SearchHome = ({ searchService, onSearch }) => {
             <div className="stat-label">Data Sources</div>
           </div>
         </div>
-        
-        <div className="featured-datasets-section">
-          <h2 className="section-title">Featured Datasets</h2>
-          <FeaturedDatasets datasets={searchService.getFeaturedDatasets()} />
-        </div>
+
+        <FeaturedDatasets
+          datasets={searchService.getFeaturedDatasets()}
+          onViewAll={handleViewAllDatasets}
+        />
       </div>
     </div>
   );
