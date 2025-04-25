@@ -1,16 +1,12 @@
 // components/filters/UnifiedFilterBar.js
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useFilters } from "../../context/FilterContext";
 
-const UnifiedFilterBar = () => { 
-  const { 
-    filters, 
-    activeFilters,
-    removeFilter,
-    clearFilters,
-    resultCount,
-    totalCount
-  } = useFilters();
+const UnifiedFilterBar = () => {
+  const { activeFilters, removeFilter, clearFilters } = useFilters();
+
+  const [isScrollable, setIsScrollable] = useState(false);
+  const filtersContainerRef = useRef(null);
 
   const getActiveFilters = () => {
     const active = [];
@@ -24,11 +20,36 @@ const UnifiedFilterBar = () => {
     return active;
   };
 
+  // Check if filters are scrollable
+  const checkScrollable = () => {
+    if (filtersContainerRef.current) {
+      const { scrollWidth, clientWidth } = filtersContainerRef.current;
+      setIsScrollable(scrollWidth > clientWidth);
+    }
+  };
+
+  // Check on mount and when active filters change
+  useEffect(() => {
+    checkScrollable();
+    // Set up resize observer
+    const observer = new ResizeObserver(() => {
+      checkScrollable();
+    });
+
+    if (filtersContainerRef.current) {
+      observer.observe(filtersContainerRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [activeFilters]);
+
   const activeFiltersList = getActiveFilters();
   const hasActiveFilters = activeFiltersList.length > 0;
 
   return (
-    <div 
+    <div
       className="unified-filter-bar"
       role="region"
       aria-label="Active filters"
@@ -38,14 +59,18 @@ const UnifiedFilterBar = () => {
           <span className="unified-filter-label" id="active-filters-label">
             Filters:
           </span>
-          
-          {hasActiveFilters ? (
-            <div 
-              className="unified-active-filters"
-              role="group"
-              aria-labelledby="active-filters-label"
-            >
-              {activeFiltersList.map(({ category, value }, index) => (
+
+          <div
+            ref={filtersContainerRef}
+            className={`unified-active-filters ${
+              isScrollable ? "scrollable" : ""
+            }`}
+            role="group"
+            aria-labelledby="active-filters-label"
+            onScroll={checkScrollable}
+          >
+            {hasActiveFilters ? (
+              activeFiltersList.map(({ category, value }, index) => (
                 <button
                   key={`${category}-${value}`}
                   className="unified-filter-tag"
@@ -66,23 +91,23 @@ const UnifiedFilterBar = () => {
                     ×
                   </span>
                 </button>
-              ))}
-            </div>
-          ) : (
-            <span className="unified-no-filters" aria-live="polite">
-              None
-            </span>
-          )}
+              ))
+            ) : (
+              <span className="unified-no-filters" aria-live="polite">
+                None
+              </span>
+            )}
+          </div>
         </div>
-        
+
         <div className="unified-filter-right">
           {hasActiveFilters && (
-            <button 
-              className="unified-clear-filters"
+            <button
+              className="unified-clear-button"
               onClick={clearFilters}
               aria-label="Clear all filters"
             >
-              Clear All
+              Clear all
             </button>
           )}
         </div>

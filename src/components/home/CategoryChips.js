@@ -1,5 +1,5 @@
 // components/home/CategoryChips.js
-import React from 'react';
+import React from "react";
 
 const CategoryChips = ({ categories, onSelectCategory }) => {
   return (
@@ -11,13 +11,13 @@ const CategoryChips = ({ categories, onSelectCategory }) => {
             key={category.name}
             className="category-chip"
             onClick={() => onSelectCategory(category)}
-            style={{ 
+            style={{
               backgroundColor: `${category.color}20`,
-              borderColor: category.color 
+              borderColor: category.color,
             }}
           >
-            <span 
-              className="category-chip-dot" 
+            <span
+              className="category-chip-dot"
               style={{ backgroundColor: category.color }}
             ></span>
             <span className="category-chip-label">{category.name}</span>
