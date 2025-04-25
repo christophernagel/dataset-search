@@ -2,6 +2,7 @@
    Layout Containers
 =========================================================== */
 
+/* Search Input Styling */
 body .hdc-dataset-catalog .hdc-search-input,
 .hdc-search-input {
   width: 100% !important;
@@ -41,13 +42,13 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .hdc-dataset-catalog {
   display: flex;
   width: 100%;
-  height: 86vh; /* Keep original height */
+  height: 86vh;
   padding: 0;
   position: relative;
-  max-width: 100%; /* Constrain to window width */
-  margin: 0 auto; /* Center the catalog */
+  max-width: 100%;
+  margin: 0 auto;
   box-sizing: border-box;
-  overflow: hidden; /* Prevent overflow */
+  overflow: hidden;
 }
 
 /* Filters Sidebar */
@@ -58,7 +59,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   height: 100%;
   scroll-behavior: smooth;
   padding: 0 15px;
-  flex-shrink: 0; /* Prevent shrinking */
+  flex-shrink: 0;
   background: white;
 }
 
@@ -85,6 +86,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   color: #6b7280;
 }
 
+/* Community Action Area */
 .hdc-community-action-area {
   display: flex;
   align-items: center;
@@ -111,7 +113,69 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   max-width: 200px;
 }
 
-/* Adjust list view to accommodate the community action area */
+/* Grid View Styling */
+.grid-view .datasets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  padding: 0 16px;
+  margin-bottom: 24px; /* Add bottom margin for container */
+}
+
+/* Card styling specific to grid view */
+.grid-view .hdc-dataset-card {
+  display: flex;
+  flex-direction: column;
+  height: 280px;
+  padding: 16px;
+  margin: 0;
+}
+
+.grid-view .hdc-dataset-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.grid-view .hdc-community-action-area {
+  margin-bottom: 12px;
+}
+
+.grid-view .hdc-dataset-title {
+  font-size: 16px;
+  margin-bottom: 4px;
+  min-height: 42px; /* Help maintain consistent card heights */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.grid-view .hdc-dataset-description {
+  margin-bottom: 0px;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 60px; /* Help ensure consistent card heights */
+}
+
+.grid-view .hdc-dataset-attributes {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.grid-view .hdc-attribute {
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* List View Adjustments */
 .list-view .hdc-dataset-card {
   flex-direction: row;
   padding: 12px;
@@ -157,10 +221,12 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   margin-bottom: 4px;
 }
 
-/* Detail view modifications */
+/* Detail View Modifications */
 .detail-view .hdc-dataset-card {
   margin-bottom: 16px;
-  padding: 20px;
+  padding: 16px;
+  width: 100%; /* Ensure cards take full width */
+  max-width: 100%; /* Prevent overflowing */
 }
 
 .detail-view .hdc-dataset-title {
@@ -175,39 +241,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 
 .detail-view .hdc-dataset-attributes {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .list-view .hdc-dataset-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .list-view .hdc-community-action-area,
-  .list-view .hdc-dataset-title,
-  .list-view .hdc-dataset-description {
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: 8px;
-  }
-
-  .list-view .hdc-dataset-attributes {
-    width: 100%;
-    margin-top: 8px;
-  }
-  .hdc-view-controls-container {
-    justify-content: space-between;
-  }
-}
-
-/* Custom tooltip for long Community Action Area names */
-.hdc-area-label {
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  gap: 16px; /* Standardize to 16px */
 }
 
 /* ===========================================================
@@ -227,13 +261,13 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  overflow-x: hidden; /* Prevent horizontal overflow */
+  overflow-x: hidden;
 }
 
 .hdc-active-filters-bar {
   position: sticky;
   top: 0;
-  z-index: 20; /* Increase z-index to ensure it stays above section headers */
+  z-index: 20;
   background-color: white;
   padding: 8px 0;
   margin: 16px 0;
@@ -242,7 +276,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
-  width: 100%; /* Make it full width */
+  width: 100%;
   box-sizing: border-box;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
@@ -277,7 +311,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   position: relative;
   min-width: 250px;
   margin-left: auto;
-  margin-right: 0; /* Remove right margin to align with padding */
+  margin-right: 0;
   z-index: 4;
 }
 
@@ -359,9 +393,9 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
-  margin-top: 8px; /* Add space between filters bar and view controls */
+  margin-top: 8px;
   margin-bottom: 16px;
-  background-color: #f9fafb; /* Optional: light background to distinguish from other elements */
+  background-color: #f9fafb;
   border-radius: 4px;
   border-bottom: 1px solid #e5e7eb;
   padding-bottom: 0.5rem;
@@ -372,6 +406,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   padding: 0 16px;
   border-bottom: 1px solid #e5e7eb;
 }
+
 .hdc-controls-header {
   display: flex;
   justify-content: space-between;
@@ -473,27 +508,9 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
    Dataset Grid and Cards
 =========================================================== */
 .category-header {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-  border-bottom: 2px solid #e5e7eb;
-}
-
-/* Category section spacing */
-.dataset-category-section {
-  margin-bottom: 60px;
-  width: 100%;
-}
-
-.dataset-category-section:not(:first-child) {
-  margin-top: 20px;
-}
-
-.category-header {
   font-size: 1.3rem;
   font-weight: 600;
+  color: #333;
   margin-bottom: 1.2rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #c5c5c5;
@@ -510,93 +527,22 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   background-color: #e5e5e5;
 }
 
-/* Improve grid layout within sections */
+/* Category section spacing */
+.dataset-category-section {
+  margin-bottom: 60px;
+  width: 100%;
+}
+
+.dataset-category-section:not(:first-child) {
+  margin-top: 20px;
+}
+
+/* Grid layout within sections */
 .datasets-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
-  padding: 0 16px;
-}
-
-/* For a smaller screen, adjust to fewer columns */
-@media (max-width: 992px) {
-  .datasets-grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .hdc-controls-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .hdc-controls-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .hdc-controls-left,
-  .hdc-controls-right {
-    width: 100%;
-  }
-
-  .hdc-controls-right {
-    justify-content: flex-end; /* Keep controls right-aligned on mobile */
-  }
-
-  .hdc-view-controls {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .hdc-controls-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  .datasets-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .category-header {
-    font-size: 1.1rem;
-    margin-left: 16px;
-    margin-right: 16px;
-  }
-}
-
-/* Color codes for community action areas - used as accents in headers */
-.category-header[data-area="Promoting Healthy Child Development"] {
-  border-left: 5px solid #ff6b6b;
-  padding-left: 10px;
-}
-
-.category-header[data-area="Youth Development and Civic Engagement"] {
-  border-left: 5px solid #4ecdc4;
-  padding-left: 10px;
-}
-
-.category-header[data-area="Creating Protective Environments"] {
-  border-left: 5px solid #45b7d1;
-  padding-left: 10px;
-}
-
-.category-header[data-area="Strengthening Economic Supports for Children and Families"] {
-  border-left: 5px solid #98d85b;
-  padding-left: 10px;
-}
-
-.category-header[data-area="Access to Safe and Stable Housing"] {
-  border-left: 5px solid #ffd166;
-  padding-left: 10px;
-}
-
-.category-header[data-area="Demographic Data"] {
-  border-left: 5px solid #6a0572;
-  padding-left: 10px;
+  padding: 0 8px;
 }
 
 /* Dataset Container */
@@ -608,7 +554,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .grid-view .datasets-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px 20px;
+  gap: 24px; /* Use consistent gap */
   padding: 0 16px;
 }
 
@@ -630,14 +576,13 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .detail-view .datasets-detail {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px; /* Standardize to 16px */
   padding: 0 16px;
 }
 
 /* ===========================================================
    Dataset Card Components - Refined Design
 =========================================================== */
-
 .hdc-dataset-card {
   background-color: white;
   border: 1px solid #e0e0e0;
@@ -648,6 +593,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   display: flex;
   flex-direction: column;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 }
 
 .hdc-dataset-card:hover {
@@ -685,7 +631,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   letter-spacing: 0.05em;
 }
 
-/* Title as a blue hyperlink */
+/* Title styling */
 .hdc-dataset-title {
   margin: 0 0 12px 0;
   font-size: 18px;
@@ -739,65 +685,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   color: #1f2937;
 }
 
-/* List View Card Modifications */
-.list-view .hdc-dataset-card {
-  display: flex;
-  align-items: center;
-  padding: 16px;
-}
-
-.list-view .hdc-dataset-content {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.list-view .hdc-type-indicator {
-  flex-shrink: 0;
-  margin-bottom: 0;
-  margin-right: 16px;
-  width: 120px;
-}
-
-.list-view .hdc-dataset-title {
-  margin-bottom: 4px;
-  font-size: 16px;
-}
-
-.list-view .hdc-dataset-description {
-  margin-bottom: 0;
-  max-width: 60%;
-}
-
-.list-view .hdc-dataset-attributes {
-  display: none;
-}
-
-/* Detail View Card Modifications */
-.detail-view .hdc-dataset-card {
-  padding: 24px;
-}
-
-.detail-view .hdc-dataset-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.detail-view .hdc-dataset-title {
-  font-size: 20px;
-  margin-bottom: 12px;
-}
-
-.detail-view .hdc-dataset-description {
-  margin-bottom: 24px;
-  font-size: 16px;
-}
-
-.detail-view .hdc-dataset-attributes {
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-}
-
 /* Action Buttons */
 .hdc-dataset-actions {
   display: flex;
@@ -805,7 +692,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   margin-top: 12px;
 }
 
-.hdc-view-button,
 .hdc-download-button {
   padding: 8px 12px;
   border-radius: 4px;
@@ -814,20 +700,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
-}
-
-.hdc-view-button {
-  background-color: #4f46e5;
-  color: white;
-}
-
-.hdc-view-button:hover {
-  background-color: #4338ca;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.hdc-download-button {
   background-color: #f3f4f6;
   color: #374151;
   border: 1px solid #d1d5db;
@@ -839,10 +711,28 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+/* Consolidated view button styles */
+.hdc-view-button {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background-color: #4f46e5;
+  color: white;
+}
+
+.hdc-view-button:hover {
+  background-color: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* ===========================================================
    Scrollbar Styles
 =========================================================== */
-
 .hdc-filters::-webkit-scrollbar,
 .hdc-dataset-grid::-webkit-scrollbar {
   width: 8px;
@@ -862,7 +752,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 /* ===========================================================
    Filter Components
 =========================================================== */
-
 /* Filter Header */
 .filter-header {
   position: sticky;
@@ -926,10 +815,10 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 500;
-  min-width: 2rem; /* Add minimum width to prevent collapse */
+  min-width: 2rem;
   opacity: 1;
-  transition: all 0.2s ease; /* Transition all properties */
-  overflow: hidden; /* Contain the number */
+  transition: all 0.2s ease;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -987,7 +876,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   position: relative;
 }
 
-/* Remove Border for Last Filter Section */
 .filter-section:last-child {
   margin-bottom: 0;
   border-bottom: none;
@@ -1004,10 +892,10 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   align-items: center;
   padding: 0;
   user-select: none;
-  height: 28px; /* Set explicit height to ensure consistent centering */
+  height: 28px;
 }
 
-/* Header checkbox specific styling and positioning */
+/* Header checkbox styling */
 .filter-section-header .filter-section-title {
   display: flex;
   align-items: center;
@@ -1018,7 +906,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .filter-section-header .filter-section-title input[type="checkbox"] {
   margin-left: 18px !important;
   margin-right: 4px !important;
-  /* Visual styling */
   appearance: none !important;
   -webkit-appearance: none !important;
   width: 13px !important;
@@ -1030,13 +917,11 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   cursor: pointer !important;
 }
 
-/* Header checkbox checked state */
 .filter-section-header .filter-section-title input[type="checkbox"]:checked {
   background-color: #4f46e5 !important;
   border-color: #4f46e5 !important;
 }
 
-/* Header checkbox checkmark */
 .filter-section-header
   .filter-section-title
   input[type="checkbox"]:checked::after {
@@ -1051,7 +936,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   transform: translate(-50%, -50%) rotate(45deg) !important;
 }
 
-/* Header checkbox hover state */
 .filter-section-header .filter-section-title input[type="checkbox"]:hover {
   border-color: #4f46e5 !important;
 }
@@ -1062,7 +946,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   font-size: 0.875rem;
   font-weight: 600;
   color: #333;
-  line-height: 16px; /* Match tooltip height */
+  line-height: 16px;
   height: 16px;
   display: inline-flex;
   align-items: center;
@@ -1076,7 +960,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 }
 
 .filter-section-content.expanded {
-  max-height: 500px; /* Arbitrary large value */
+  max-height: 500px;
   opacity: 1;
 }
 
@@ -1128,7 +1012,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 /* ===========================================================
    Tooltip Components
 =========================================================== */
-
 .tooltip-overlay {
   position: fixed;
   top: 0;
@@ -1226,7 +1109,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 /* ===========================================================
    Filter Options
 =========================================================== */
-
 .filter-group {
   padding-left: 38px;
   display: flex;
@@ -1244,12 +1126,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 
 .filter-option:hover {
   background-color: rgba(0, 0, 0, 0.02);
-}
-
-.filter-option input[type="radio"],
-.filter-option input[type="checkbox"] {
-  margin: 0;
-  cursor: pointer;
 }
 
 .filter-option input[type="checkbox"] {
@@ -1333,7 +1209,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 /* ===========================================================
    Mobile Drawer
 =========================================================== */
-
 .filter-drawer {
   display: block;
   position: fixed;
@@ -1403,7 +1278,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 /* ===========================================================
    Responsive Adjustments
 =========================================================== */
-
 @media (max-width: 1200px) {
   .hdc-dataset-grid {
     padding: 0px;
@@ -1418,12 +1292,18 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   }
 
   .hdc-catalog-layout {
-    gap: 0rem; /* Reduce the gap on tablet screens */
+    gap: 0rem;
   }
 
   .hdc-filters {
     width: 280px;
     min-width: 250px;
+  }
+}
+
+@media (max-width: 992px) {
+  .datasets-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   }
 }
 
@@ -1474,10 +1354,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
     padding: 0 15px 100px;
   }
 
-  .filter-section-header {
-    top: 0;
-  }
-
   .hdc-dataset-grid {
     margin-left: 0;
     height: auto;
@@ -1512,6 +1388,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
     align-items: flex-start;
     gap: 16px;
   }
+
   .hdc-view-controls-container {
     display: flex;
     justify-content: flex-end;
@@ -1530,7 +1407,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
     grid-template-columns: 1fr;
   }
 
-  /* Mobile card adjustments */
   .list-view .hdc-dataset-content {
     flex-direction: column;
     align-items: flex-start;
@@ -1544,6 +1420,41 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   .list-view .hdc-dataset-description {
     max-width: 100%;
   }
+
+  .list-view .hdc-community-action-area,
+  .list-view .hdc-dataset-title,
+  .list-view .hdc-dataset-description {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+
+  .list-view .hdc-dataset-attributes {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .hdc-controls-bar,
+  .hdc-controls-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .hdc-controls-left,
+  .hdc-controls-right {
+    width: 100%;
+  }
+
+  .hdc-controls-right {
+    justify-content: flex-end;
+  }
+
+  .hdc-controls-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 }
 
 @media (max-width: 576px) {
@@ -1551,18 +1462,14 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
     padding: 20px;
   }
 
-  .datasets-grid {
-    grid-template-columns: 1fr;
-  }
-
   .hdc-dataset-attributes {
     grid-template-columns: 1fr;
   }
 }
 
-/* Add to existing styles.css file */
-
-/* ================ Search Home Styles ================ */
+/* ===========================================================
+   Search Home Styles
+=========================================================== */
 .search-home {
   display: flex;
   flex-direction: column;
@@ -1591,8 +1498,10 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 
 /* Search Bar */
 .search-bar {
+  position: relative;
   margin-bottom: 2rem;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .search-bar-large .search-input-container {
@@ -1603,50 +1512,61 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .search-input-container {
   position: relative;
   width: 100%;
+  display: flex;
+  box-sizing: border-box;
 }
 
 .search-input {
   width: 100%;
-  padding: 1rem 3rem 1rem 1.5rem;
+  padding: 1rem 4.5rem 1rem 1.5rem;
   font-size: 1.125rem;
   border-radius: 0.5rem;
   border: 1px solid #d1d5db;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
+  box-sizing: border-box;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa0a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 16px;
+  background-color: white;
 }
 
 .search-input:focus {
   outline: none;
   border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 .search-button {
   position: absolute;
-  right: 1rem;
+  right: 0.5rem;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
+  padding: 0.5rem 1rem;
+  color: white;
+  background-color: #4f46e5;
   border: none;
-  color: #6b7280;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: background-color 0.2s ease;
 }
 
 .search-button:hover {
-  color: #4f46e5;
+  background-color: #4338ca;
 }
 
-/* Compact search bar */
+/* Search Bar Compact */
 .search-bar-compact .search-input-container {
-  max-width: none;
+  max-width: 480px;
+  width: 100%;
 }
 
 .search-bar-compact .search-input {
-  padding: 0.75rem 2.5rem 0.75rem 1rem;
-  font-size: 1rem;
+  padding: 0.75rem 5rem 0.75rem 2.5rem;
+  font-size: 0.875rem;
 }
 
 /* Category Chips */
@@ -1729,15 +1649,44 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   text-align: left;
 }
 
+.featured-datasets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
 .section-title {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   color: #111827;
 }
 
+.view-all-button {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.view-all-button:hover {
+  background-color: #4338ca;
+}
+
+.view-all-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+}
+
 .featured-datasets {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
@@ -1790,16 +1739,22 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   color: #6b7280;
 }
 
-/* ================ Search Catalog Styles ================ */
+/* ===========================================================
+   Search Catalog Styles
+=========================================================== */
 .search-catalog {
   display: flex;
   flex-direction: column;
   height: 100%;
+  --spacing-base: 8px;
+  --spacing-s: 12px;
+  --spacing-m: 16px;
+  --spacing-l: 24px;
+  --spacing-xl: 32px;
 }
 
 .search-catalog-header {
   margin-bottom: 0;
-  padding-bottom: 12px;
   background-color: white;
   border-bottom: 1px solid #e5e7eb;
 }
@@ -1809,15 +1764,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   flex: 1;
   overflow: hidden;
   gap: 24px;
-  padding: 0 16px;
-}
-
-.search-catalog-content {
-  flex: 1;
-  min-width: 0; /* Prevent flex item overflow */
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  padding: 12px;
 }
 
 /* Related Suggestions */
@@ -1855,6 +1802,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   color: #1f2937;
 }
 
+/* Unified Filter Bar */
 .unified-filter-bar {
   background-color: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
@@ -1862,457 +1810,10 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   position: sticky;
   top: 0;
   z-index: 20;
-  height: 48px; /* Fixed height */
+  height: 16px;
   display: flex;
   align-items: center;
-}
-
-.unified-filter-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.unified-filter-left {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.unified-filter-label {
-  font-weight: 500;
-  color: #4b5563;
-  margin-right: 0.75rem;
-  white-space: nowrap;
-}
-
-.unified-active-filters {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: 0.5rem;
-  padding-bottom: 0px;
-  max-width: 100%;
-  scrollbar-width: none; /* Firefox */
-}
-
-.unified-active-filters::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
-}
-
-.unified-filter-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.5rem;
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  color: #4b5563;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.unified-filter-tag:hover {
-  background-color: #f3f4f6;
-}
-
-.unified-filter-text {
-  margin-right: 0.25rem;
-}
-
-.unified-filter-remove {
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.unified-no-filters {
-  color: #9ca3af;
-  font-style: italic;
-  font-size: 0.875rem;
-}
-
-.unified-filter-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.unified-clear-filters {
-  background: none;
-  border: none;
-  color: #4f46e5;
-  font-size: 0.75rem;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-}
-
-.unified-clear-filters:hover {
-  text-decoration: underline;
-}
-
-.unified-result-count {
-  color: #6b7280;
-  font-size: 0.75rem;
-  white-space: nowrap;
-}
-
-/* Search Results Header */
-.search-results-header {
-  border-left: 5px solid #4f46e5;
-  padding-left: 0.75rem;
-}
-
-/* Relevance Indicator */
-.hdc-relevance-indicator {
-  height: 4px;
-  background-color: #e5e7eb;
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 0.5rem;
-}
-
-.hdc-relevance-bar {
-  height: 100%;
-  background-color: #4f46e5;
-}
-
-/* Matched Fields */
-.hdc-matched-fields {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  margin-top: 0.5rem;
-  font-size: 0.6875rem;
-}
-
-.hdc-matched-label {
-  color: #6b7280;
-}
-
-.hdc-matched-field {
-  background-color: #e0e7ff;
-  color: #4f46e5;
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .featured-datasets {
-    grid-template-columns: 1fr;
-  }
-
-  .search-home-stats {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .unified-filter-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .unified-filter-right {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .search-bar-large .search-input-container {
-    max-width: none;
-  }
-}
-
-/* Search Bar Styles */
-.search-bar {
-  position: relative;
-  margin-bottom: 2rem;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.search-bar-large .search-input-container {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.search-input-container {
-  position: relative;
-  width: 100%;
-  display: flex;
-  box-sizing: border-box;
-}
-
-.search-input {
-  width: 100%;
-  padding: 1rem 4.5rem 1rem 1.5rem;
-  font-size: 1.125rem;
-  border-radius: 0.5rem;
-  border: 1px solid #d1d5db;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-.search-button {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 0.375rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.search-button:hover {
-  background-color: #4338ca;
-}
-
-/* Search Suggestions */
-.search-suggestions {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  margin-top: 0.5rem;
-  z-index: 50;
-  overflow: hidden;
-}
-
-.suggestions-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.suggestion-item {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.suggestion-item:hover {
-  background-color: #f3f4f6;
-}
-
-.suggestion-text {
-  font-size: 0.875rem;
-  color: #374151;
-}
-
-/* Dataset Card */
-.hdc-dataset-card {
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  height: 100%;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.hdc-dataset-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-color: #d1d5db;
-}
-
-.hdc-community-action-area {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.hdc-area-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 0.5rem;
-}
-
-.hdc-area-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #4b5563;
-}
-
-.hdc-dataset-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0 0 0.75rem 0;
-}
-
-.hdc-dataset-description {
-  font-size: 0.875rem;
-  color: #4b5563;
-  margin: 0 0 1rem 0;
-  line-height: 1.5;
-}
-
-.hdc-dataset-attributes {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 0.5rem;
-  border-top: 1px solid #e5e7eb;
-  padding-top: 0.75rem;
-}
-
-.hdc-attribute {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.hdc-attribute-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #6b7280;
-}
-
-.hdc-attribute-value {
-  font-size: 0.875rem;
-  color: #374151;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .search-bar-large .search-input-container {
-    max-width: none;
-  }
-
-  .search-input {
-    padding-right: 5rem;
-  }
-
-  .hdc-dataset-attributes {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Search Bar Styles */
-.search-bar {
-  position: relative;
-  margin-bottom: 1rem;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.search-bar-compact .search-input-container {
-  max-width: 480px; /* Standard width constraint */
-  width: 100%;
-}
-
-.search-input-container {
-  position: relative;
-  width: 100%;
-  display: flex;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.75rem 5rem 0.75rem 2.5rem;
-  font-size: 0.875rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.375rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa0a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: 12px center;
-  background-size: 16px;
-  background-color: white;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-.search-button {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 0.5rem 1rem;
-  color: white;
-  background-color: #4f46e5;
-  border: none;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.search-button:hover {
-  background-color: #4338ca;
-}
-.featured-datasets-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.view-all-button {
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 0.375rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  text-decoration: none;
-}
-
-.view-all-button:hover {
-  background-color: #4338ca;
-}
-
-.view-all-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
-}
-
-.featured-datasets {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .featured-datasets-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .featured-datasets-header h2 {
-    margin-bottom: 0;
-  }
+  padding: 16px 0;
 }
 
 .unified-filter-content {
@@ -2320,7 +1821,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 32px;
   padding: 0 16px;
 }
 
@@ -2339,7 +1840,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   white-space: nowrap;
 }
 
-/* Container for filter tags - fixed height with scrolling */
 .unified-active-filters {
   display: flex;
   flex-wrap: nowrap;
@@ -2348,14 +1848,13 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   height: 100%;
   max-width: calc(100% - 80px);
   align-items: center;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
 }
 
 .unified-active-filters::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+  display: none;
 }
 
-/* Individual filter tags */
 .unified-filter-tag {
   display: inline-flex;
   align-items: center;
@@ -2385,14 +1884,12 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   line-height: 1;
 }
 
-/* Empty state for no filters */
 .unified-no-filters {
   color: #9ca3af;
   font-style: italic;
   font-size: 0.875rem;
 }
 
-/* Right side with clear button */
 .unified-filter-right {
   display: flex;
   align-items: center;
@@ -2413,24 +1910,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   text-decoration: underline;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .unified-filter-bar {
-    height: 48px; /* Keep consistent height on mobile */
-  }
-
-  .unified-active-filters {
-    max-width: calc(100% - 100px); /* Adjust for smaller screens */
-  }
-}
-/* Updated Clear Button Styles - Add to styles.css */
-
-/* Right side with standardized clear button */
-.unified-filter-right {
-  display: flex;
-  align-items: center;
-}
-
+/* Clear Button Styles */
 .unified-clear-button {
   background-color: #4f46e5;
   color: white;
@@ -2455,4 +1935,112 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .unified-clear-button:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+}
+
+/* Search Results Header */
+.search-results-header {
+  border-left: 5px solid #4f46e5;
+  padding-left: 0.75rem;
+}
+
+/* Matched Fields */
+.hdc-matched-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.6875rem;
+}
+
+.hdc-matched-label {
+  color: #6b7280;
+}
+
+.hdc-matched-field {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+/* Search Results Controls */
+.search-results-controls {
+  background-color: white;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Search Suggestions */
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  overflow: hidden;
+}
+
+.suggestions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestion-text {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+/* Additional Media Queries */
+@media (max-width: 768px) {
+  .featured-datasets-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .featured-datasets-header h2 {
+    margin-bottom: 0;
+  }
+
+  .search-home-stats {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .unified-filter-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .unified-filter-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .search-bar-large .search-input-container {
+    max-width: none;
+  }
+
+  .unified-filter-bar {
+    height: auto;
+  }
+
+  .unified-active-filters {
+    max-width: calc(100% - 100px);
+  }
+
+  .featured-datasets {
+    grid-template-columns: 1fr;
+  }
+
+  .search-input {
+    padding-right: 5rem;
+  }
 }

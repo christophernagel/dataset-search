@@ -4,7 +4,7 @@ import React from "react";
 const CategoryChips = ({ categories, onSelectCategory }) => {
   return (
     <div className="category-chips">
-      <div className="category-chips-label">Popular categories:</div>
+      <div className="category-chips-label">Action Areas:</div>
       <div className="category-chips-container">
         {categories.map((category) => (
           <button
