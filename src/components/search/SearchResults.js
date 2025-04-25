@@ -17,9 +17,9 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
     setSearchQuery,
     setFilters,
     removeFilter,
-    clearFilters
+    clearFilters,
   } = useFilters();
-  
+
   const { viewMode, sortBy, setViewMode, setSortBy } = useView();
 
   // Get search results
@@ -33,27 +33,19 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
   return (
     <div className="search-catalog">
       <div className="search-catalog-header">
-        <SearchBar 
-          onSearch={setSearchQuery} 
+        <SearchBar
+          onSearch={setSearchQuery}
           initialQuery={searchQuery}
           compact={true}
         />
-        
-        {searchQuery && (
-          <RelatedSuggestions 
-            query={searchQuery}
-            onSuggestionClick={setSearchQuery}
-            searchService={searchService}
-          />
-        )}
       </div>
-      
+
       <UnifiedFilterBar
         filters={activeFilters}
         onRemoveFilter={removeFilter}
         onClearFilters={clearFilters}
       />
-      
+
       <div className="search-catalog-layout">
         <div className="mobile-filters">
           <FilterDrawer>
@@ -63,14 +55,14 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
             />
           </FilterDrawer>
         </div>
-        
+
         <div className="desktop-filters">
           <DatasetFilters
             onFilterChange={setFilters}
             activeFilters={activeFilters}
           />
         </div>
-        
+
         <div className="search-catalog-content">
           <ViewControls
             viewMode={viewMode}
@@ -80,7 +72,7 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
             resultCount={searchResults.length}
             searchQuery={searchQuery}
           />
-          
+
           {searchResults.length === 0 ? (
             <div className="hdc-search-no-results">
               <h2>No datasets found</h2>
@@ -98,18 +90,12 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
                   <li>Browse all datasets by category</li>
                 </ul>
               </div>
-              <button 
-                className="back-to-home-button"
-                onClick={onNavigateHome}
-              >
+              <button className="back-to-home-button" onClick={onNavigateHome}>
                 Back to Home
               </button>
             </div>
           ) : (
-            <DatasetGrid 
-              datasets={searchResults}
-              viewMode={viewMode}
-            />
+            <DatasetGrid datasets={searchResults} viewMode={viewMode} />
           )}
         </div>
       </div>
