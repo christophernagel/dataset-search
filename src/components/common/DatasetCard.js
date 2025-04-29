@@ -12,6 +12,7 @@ const communityActionAreaColors = {
 };
 
 const DatasetCard = ({
+  id,
   name,
   description,
   type,
@@ -25,6 +26,8 @@ const DatasetCard = ({
   // New props for search results
   relevanceScore,
   matchedFields,
+  // New prop for handling selection
+  onSelectDataset,
 }) => {
   // Get the color for community action area if available
   const areaColor = communityActionAreaColors[communityActionArea] || "#808080";
@@ -32,9 +35,18 @@ const DatasetCard = ({
   const handleKeyDown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      if (pageUrl) {
+      if (onSelectDataset) {
+        onSelectDataset();
+      } else if (pageUrl) {
         window.open(pageUrl, "_self");
       }
+    }
+  };
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (onSelectDataset) {
+      onSelectDataset();
     }
   };
 
@@ -75,10 +87,11 @@ const DatasetCard = ({
   return (
     <div
       className="hdc-dataset-card"
-      tabIndex={pageUrl ? "0" : "-1"}
-      role={pageUrl ? "button" : "article"}
-      aria-label={pageUrl ? `View details for ${name}` : undefined}
+      tabIndex={onSelectDataset || pageUrl ? "0" : "-1"}
+      role={onSelectDataset || pageUrl ? "button" : "article"}
+      aria-label={onSelectDataset ? `View details for ${name}` : undefined}
       onKeyDown={handleKeyDown}
+      onClick={handleClick}
     >
       {renderRelevanceIndicator()}
 
@@ -95,15 +108,19 @@ const DatasetCard = ({
 
         {/* Title as a hyperlink */}
         <h3 className="hdc-dataset-title">
-          <a
-            href={pageUrl || "#"}
-            className="hdc-dataset-title-link"
-            onClick={(e) => {
-              if (!pageUrl) e.preventDefault();
-            }}
-          >
-            {name}
-          </a>
+          {onSelectDataset ? (
+            <span className="hdc-dataset-title-link">{name}</span>
+          ) : (
+            <a
+              href={pageUrl || "#"}
+              className="hdc-dataset-title-link"
+              onClick={(e) => {
+                if (!pageUrl) e.preventDefault();
+              }}
+            >
+              {name}
+            </a>
+          )}
         </h3>
 
         {/* Description */}

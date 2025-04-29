@@ -7,14 +7,60 @@ const ViewControls = ({
   onSortChange,
   resultCount,
   searchQuery,
+  selectedDataset,
+  onBackToCatalog,
+  isTransitioning
 }) => {
+  // If we're in dataset detail mode
+  if (selectedDataset) {
+    return (
+      <div
+        className={`hdc-controls-section detail-mode ${isTransitioning ? 'transitioning' : ''}`}
+        role="region"
+        aria-label="Dataset detail controls"
+      >
+        <div className="hdc-controls-header">
+          <div className="hdc-controls-left">
+            <div className="hdc-results-info">Dataset Information</div>
+          </div>
+
+          <div className="hdc-controls-right">
+            <button
+              className="hdc-back-button"
+              onClick={onBackToCatalog}
+              aria-label="Back to dataset catalog"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ marginRight: "8px" }}
+              >
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              Back to Catalog
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Standard view for catalog mode
   const resultText = searchQuery
     ? `Found ${resultCount} results for "${searchQuery}"`
     : `Showing ${resultCount} datasets`;
 
   return (
     <div
-      className="hdc-controls-section"
+      className={`hdc-controls-section ${isTransitioning ? 'transitioning' : ''}`}
       role="region"
       aria-label="View controls"
     >

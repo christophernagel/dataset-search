@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import DatasetGrid from "../DatasetGrid";
 import DatasetFilters from "../filters/DatasetFilters";
 import FilterDrawer from "../filters/FilterDrawer";
@@ -20,6 +20,30 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
   } = useFilters();
 
   const { viewMode, sortBy, setViewMode, setSortBy } = useView();
+  
+  // New state for handling selected dataset and transitions
+  const [selectedDataset, setSelectedDataset] = useState(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Handle dataset selection
+  const handleSelectDataset = (dataset) => {
+    setIsTransitioning(true);
+    // Small delay for transition effect
+    setTimeout(() => {
+      setSelectedDataset(dataset);
+      setIsTransitioning(false);
+    }, 300);
+  };
+
+  // Handle back to catalog
+  const handleBackToCatalog = () => {
+    setIsTransitioning(true);
+    // Small delay for transition effect
+    setTimeout(() => {
+      setSelectedDataset(null);
+      setIsTransitioning(false);
+    }, 300);
+  };
 
   // Get search results
   const searchResults = React.useMemo(() => {
@@ -30,8 +54,8 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
   }, [searchService, searchQuery, activeFilters]);
 
   return (
-    <div className="search-catalog">
-      <div className="search-catalog-header">
+    <div className={`search-catalog ${selectedDataset ? 'detail-mode' : ''}`}>
+      <div className={`search-catalog-header ${selectedDataset ? 'hidden' : ''}`}>
         <SearchBar
           onSearch={setSearchQuery}
           initialQuery={searchQuery}
@@ -43,10 +67,11 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
         filters={activeFilters}
         onRemoveFilter={removeFilter}
         onClearFilters={clearFilters}
+        className={selectedDataset ? 'hidden' : ''}
       />
 
       <div className="search-catalog-layout">
-        <div className="mobile-filters">
+        <div className={`mobile-filters ${selectedDataset ? 'hidden' : ''}`}>
           <FilterDrawer>
             <DatasetFilters
               onFilterChange={setFilters}
@@ -55,7 +80,7 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
           </FilterDrawer>
         </div>
 
-        <div className="desktop-filters">
+        <div className={`desktop-filters ${selectedDataset ? 'hidden' : ''}`}>
           <DatasetFilters
             onFilterChange={setFilters}
             activeFilters={activeFilters}
@@ -70,9 +95,12 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
             onSortChange={setSortBy}
             resultCount={searchResults.length}
             searchQuery={searchQuery}
+            selectedDataset={selectedDataset}
+            onBackToCatalog={handleBackToCatalog}
+            isTransitioning={isTransitioning}
           />
 
-          {searchResults.length === 0 ? (
+          {searchResults.length === 0 && !selectedDataset ? (
             <div className="hdc-search-no-results">
               <h2>No datasets found</h2>
               <p>
@@ -94,7 +122,14 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
               </button>
             </div>
           ) : (
-            <DatasetGrid datasets={searchResults} viewMode={viewMode} />
+            <DatasetGrid 
+              datasets={searchResults} 
+              viewMode={viewMode}
+              onSelectDataset={handleSelectDataset}
+              selectedDataset={selectedDataset}
+              onBackToCatalog={handleBackToCatalog}
+              isTransitioning={isTransitioning} 
+            />
           )}
         </div>
       </div>
