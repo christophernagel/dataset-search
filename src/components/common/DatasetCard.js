@@ -24,7 +24,7 @@ const DatasetCard = ({
   pageUrl,
   // New props for search results
   relevanceScore,
-  matchedFields
+  matchedFields,
 }) => {
   // Get the color for community action area if available
   const areaColor = communityActionAreaColors[communityActionArea] || "#808080";
@@ -41,22 +41,25 @@ const DatasetCard = ({
   // Relevance indicator for search results
   const renderRelevanceIndicator = () => {
     if (relevanceScore === undefined) return null;
-    
+
     return (
-      <div className="hdc-relevance-indicator" title={`Relevance: ${Math.round(relevanceScore * 100)}%`}>
-        <div 
-          className="hdc-relevance-bar" 
+      <div
+        className="hdc-relevance-indicator"
+        title={`Relevance: ${Math.round(relevanceScore * 100)}%`}
+      >
+        <div
+          className="hdc-relevance-bar"
           style={{ width: `${Math.round(relevanceScore * 100)}%` }}
           aria-label={`Relevance score: ${Math.round(relevanceScore * 100)}%`}
         />
       </div>
     );
   };
-  
+
   // Matched fields indicator
   const renderMatchedFields = () => {
     if (!matchedFields || matchedFields.length === 0) return null;
-    
+
     return (
       <div className="hdc-matched-fields">
         <span className="hdc-matched-label">Matched:</span>
@@ -78,7 +81,7 @@ const DatasetCard = ({
       onKeyDown={handleKeyDown}
     >
       {renderRelevanceIndicator()}
-      
+
       <div className="hdc-dataset-content">
         {/* Community Action Area indicator */}
         <div className="hdc-community-action-area">
@@ -110,13 +113,6 @@ const DatasetCard = ({
 
         {/* Dataset attributes */}
         <div className="hdc-dataset-attributes">
-          {dataTopic && (
-            <div className="hdc-attribute">
-              <span className="hdc-attribute-label">Topic:</span>
-              <span className="hdc-attribute-value">{dataTopic}</span>
-            </div>
-          )}
-
           {source && (
             <div className="hdc-attribute">
               <span className="hdc-attribute-label">Source:</span>

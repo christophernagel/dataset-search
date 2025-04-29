@@ -18,20 +18,27 @@ const DatasetGrid = ({ datasets }) => {
 
   // Calculate grid columns based on viewport width
   const getGridColumns = useCallback(() => {
-    if (width < 768) return 1;
-    if (width < 1024) return 2;
-    if (width < 1280) return 3;
-    return 4;
+    // Get available width (accounting for sidebar width)
+    const availableWidth = width - 320; // Subtract sidebar width
+
+    // Determine minimum card width
+    const minCardWidth = 300;
+
+    // Calculate columns based on available space
+    const columns = Math.max(1, Math.floor(availableWidth / minCardWidth));
+
+    // Limit to a maximum of 4 columns
+    return Math.min(columns, 4);
   }, [width]);
 
   // Render grid view
   const renderGridView = () => (
-    <div 
+    <div
       className="datasets-grid"
       style={{
-        display: 'grid',
+        display: "grid",
         gridTemplateColumns: `repeat(${getGridColumns()}, 1fr)`,
-        gap: '16px'
+        gap: "16px",
       }}
     >
       {datasets.map((dataset) => (

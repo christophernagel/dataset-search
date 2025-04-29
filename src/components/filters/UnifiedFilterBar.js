@@ -3,7 +3,13 @@ import React, { useRef, useEffect, useState } from "react";
 import { useFilters } from "../../context/FilterContext";
 
 const UnifiedFilterBar = () => {
-  const { activeFilters, removeFilter, clearFilters } = useFilters();
+  const {
+    activeFilters,
+    removeFilter,
+    clearFilters,
+    searchQuery,
+    setSearchQuery,
+  } = useFilters();
 
   const [isScrollable, setIsScrollable] = useState(false);
   const filtersContainerRef = useRef(null);
@@ -43,10 +49,10 @@ const UnifiedFilterBar = () => {
     return () => {
       observer.disconnect();
     };
-  }, [activeFilters]);
+  }, [activeFilters, searchQuery]);
 
   const activeFiltersList = getActiveFilters();
-  const hasActiveFilters = activeFiltersList.length > 0;
+  const hasActiveFilters = activeFiltersList.length > 0 || searchQuery;
 
   return (
     <div
@@ -69,34 +75,56 @@ const UnifiedFilterBar = () => {
             aria-labelledby="active-filters-label"
             onScroll={checkScrollable}
           >
-            {hasActiveFilters ? (
-              activeFiltersList.map(({ category, value }, index) => (
-                <button
-                  key={`${category}-${value}`}
-                  className="unified-filter-tag"
-                  onClick={() => removeFilter(category, value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      removeFilter(category, value);
-                    }
-                  }}
-                  aria-label={`Remove filter ${category}: ${value}`}
-                  tabIndex="0"
-                >
-                  <span className="unified-filter-text">
-                    {category}: {value}
-                  </span>
-                  <span className="unified-filter-remove" aria-hidden="true">
-                    ×
-                  </span>
-                </button>
-              ))
-            ) : (
+            {!hasActiveFilters && (
               <span className="unified-no-filters" aria-live="polite">
                 None
               </span>
             )}
+
+            {searchQuery && (
+              <button
+                className="unified-filter-tag unified-search-tag"
+                onClick={() => setSearchQuery("")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSearchQuery("");
+                  }
+                }}
+                aria-label={`Clear search: ${searchQuery}`}
+                tabIndex="0"
+              >
+                <span className="unified-filter-text">
+                  Search: {searchQuery}
+                </span>
+                <span className="unified-filter-remove" aria-hidden="true">
+                  ×
+                </span>
+              </button>
+            )}
+
+            {activeFiltersList.map(({ category, value }, index) => (
+              <button
+                key={`${category}-${value}`}
+                className="unified-filter-tag"
+                onClick={() => removeFilter(category, value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    removeFilter(category, value);
+                  }
+                }}
+                aria-label={`Remove filter ${category}: ${value}`}
+                tabIndex="0"
+              >
+                <span className="unified-filter-text">
+                  {category}: {value}
+                </span>
+                <span className="unified-filter-remove" aria-hidden="true">
+                  ×
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 

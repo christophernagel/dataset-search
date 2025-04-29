@@ -405,6 +405,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   margin-bottom: 1.5rem;
   padding: 0 16px;
   border-bottom: 1px solid #e5e7eb;
+  overflow: hidden;
 }
 
 .hdc-controls-header {
@@ -412,25 +413,30 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   justify-content: space-between;
   align-items: center;
   padding-bottom: 12px;
+  flex-wrap: nowrap;
 }
 
 .hdc-controls-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
 }
 
 .hdc-controls-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  min-width: 0; /* Allow shrinking */
+  overflow: hidden; /* Contain overflow */
+  text-overflow: ellipsis; /* Show ellipsis for text overflow */
+  white-space: nowrap;
 }
 
 .hdc-controls-right {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-shrink: 0;
+  padding-right: 0px;
 }
 
 .hdc-section-title {
@@ -453,7 +459,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .hdc-results-info,
 .hdc-sort-controls,
 .hdc-view-controls {
-  padding-top: 8px;
+  padding-top: 0px;
   display: flex;
 }
 
@@ -478,6 +484,9 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .hdc-results-info {
   font-size: 0.9rem;
   color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .hdc-view-button {
@@ -1756,7 +1765,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .search-catalog-header {
   margin-bottom: 0;
   background-color: white;
-  border-bottom: 1px solid #e5e7eb;
 }
 
 .search-catalog-layout {
@@ -1805,15 +1813,14 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 /* Unified Filter Bar */
 .unified-filter-bar {
   background-color: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 0;
   position: sticky;
   top: 0;
   z-index: 20;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  padding: 16px 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .unified-filter-content {
@@ -1824,13 +1831,13 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   height: 32px;
   padding: 0 16px;
 }
-
 .unified-filter-left {
   display: flex;
   align-items: center;
-  flex: 1;
   min-width: 0;
-  height: 100%;
+  flex: 1; /* Take up all available space */
+  overflow: hidden; /* Contain overflow */
+  position: relative;
 }
 
 .unified-filter-label {
@@ -1838,6 +1845,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   color: #4b5563;
   margin-right: 12px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .unified-active-filters {
@@ -1846,7 +1854,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   overflow-x: auto;
   gap: 8px;
   height: 100%;
-  max-width: calc(100% - 80px);
+  max-width: calc(100% - 78px);
   align-items: center;
   scrollbar-width: none;
 }
@@ -1893,6 +1901,8 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .unified-filter-right {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+  margin-right: 44px;
 }
 
 .unified-clear-filters {
