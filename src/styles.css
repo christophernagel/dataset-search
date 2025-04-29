@@ -1830,6 +1830,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   width: 100%;
   height: 32px;
   padding: 0 16px;
+  box-sizing: border-box;
 }
 .unified-filter-left {
   display: flex;
@@ -1838,6 +1839,13 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   flex: 1; /* Take up all available space */
   overflow: hidden; /* Contain overflow */
   position: relative;
+}
+
+.unified-filter-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-right: 12px;
 }
 
 .unified-filter-label {
@@ -1854,7 +1862,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   overflow-x: auto;
   gap: 8px;
   height: 100%;
-  max-width: calc(100% - 78px);
+  max-width: calc(100% - 80px);
   align-items: center;
   scrollbar-width: none;
 }
@@ -1896,13 +1904,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   color: #9ca3af;
   font-style: italic;
   font-size: 0.875rem;
-}
-
-.unified-filter-right {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  margin-right: 44px;
 }
 
 .unified-clear-filters {
