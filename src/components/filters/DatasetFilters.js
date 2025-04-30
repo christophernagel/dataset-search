@@ -148,6 +148,7 @@ const FilterSection = ({
   tooltip,
   onFilterChange,
   activeFilters,
+  disabled = false,
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -173,6 +174,7 @@ const FilterSection = ({
   }, [activeFilters, title, children]);
 
   const handleHeaderCheckboxChange = (e) => {
+    if (disabled) return;
     e.stopPropagation();
     const isChecked = e.target.checked;
 
@@ -194,6 +196,7 @@ const FilterSection = ({
   };
 
   const handleTooltipClick = (e) => {
+    if (disabled) return;
     e.stopPropagation();
     if (tooltipButtonRef.current) {
       const buttonRect = tooltipButtonRef.current.getBoundingClientRect();
@@ -206,6 +209,7 @@ const FilterSection = ({
   };
 
   const handleKeyDown = (e) => {
+    if (disabled) return;
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       setIsExpanded(!isExpanded);
@@ -213,15 +217,18 @@ const FilterSection = ({
   };
 
   return (
-    <div className="filter-section">
+    <div
+      className={`filter-section ${disabled ? "filter-section-disabled" : ""}`}
+    >
       <div
         className="filter-section-header"
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={disabled ? undefined : () => setIsExpanded(!isExpanded)}
         onKeyDown={handleKeyDown}
-        tabIndex="0"
+        tabIndex={disabled ? "-1" : "0"}
         role="button"
         aria-expanded={isExpanded}
         aria-controls={sectionId}
+        aria-disabled={disabled}
       >
         <div className="filter-section-title">
           <span className={`expand-icon ${isExpanded ? "expanded" : ""}`}>
@@ -233,6 +240,7 @@ const FilterSection = ({
             onChange={handleHeaderCheckboxChange}
             onClick={(e) => e.stopPropagation()}
             aria-label={`Select all ${title} options`}
+            disabled={disabled}
           />
           <h3>{title}</h3>
         </div>
@@ -242,6 +250,7 @@ const FilterSection = ({
             className="filter-tooltip"
             onClick={handleTooltipClick}
             aria-label={`Show more information about ${title}`}
+            disabled={disabled}
           >
             ?
           </button>
@@ -267,7 +276,11 @@ const FilterSection = ({
 };
 
 // Main DatasetFilters Component
-const DatasetFilters = ({ onFilterChange, activeFilters }) => {
+const DatasetFilters = ({
+  onFilterChange,
+  activeFilters,
+  disabled = false,
+}) => {
   const [activeFilterCount, setActiveFilterCount] = useState(0);
 
   useEffect(() => {
@@ -283,6 +296,7 @@ const DatasetFilters = ({ onFilterChange, activeFilters }) => {
   };
 
   const handleFilterChange = (category, value) => {
+    if (disabled) return;
     const currentFilters = { ...activeFilters };
     currentFilters[category] = {
       ...currentFilters[category],
@@ -292,6 +306,7 @@ const DatasetFilters = ({ onFilterChange, activeFilters }) => {
   };
 
   const clearFilters = () => {
+    if (disabled) return;
     onFilterChange({});
   };
 
@@ -305,6 +320,7 @@ const DatasetFilters = ({ onFilterChange, activeFilters }) => {
           tooltip={config.tooltip}
           onFilterChange={onFilterChange}
           activeFilters={activeFilters}
+          disabled={disabled}
         >
           <div className="filter-group">
             {config.options.map((option) => (
@@ -315,6 +331,7 @@ const DatasetFilters = ({ onFilterChange, activeFilters }) => {
                   checked={activeFilters?.[category]?.[option] || false}
                   onChange={() => handleFilterChange(category, option)}
                   aria-label={`${category}: ${option}`}
+                  disabled={disabled}
                 />
                 <label htmlFor={`${category}-${option}`}>{option}</label>
               </div>
@@ -325,8 +342,12 @@ const DatasetFilters = ({ onFilterChange, activeFilters }) => {
   };
 
   return (
-    <div className="hdc-filters" role="region" aria-label="Dataset filters">
- 
+    <div
+      className={`hdc-filters ${disabled ? "hdc-filters-disabled" : ""}`}
+      role="region"
+      aria-label="Dataset filters"
+      aria-disabled={disabled}
+    >
       <div className="filter-sections">{renderFilters()}</div>
     </div>
   );

@@ -8,19 +8,23 @@ import { useFilters } from "../context/FilterContext";
 import { useView } from "../context/ViewContext";
 
 // Extracted Filter Section Component
-const FilterSection = ({ isMobile, isHidden }) => {
+const FilterSection = ({ isMobile, isHidden, disabled }) => {
   const { activeFilters, setFilters } = useFilters();
 
   if (isHidden) return null;
 
   const FilterContent = (
-    <DatasetFilters onFilterChange={setFilters} activeFilters={activeFilters} />
+    <DatasetFilters
+      onFilterChange={setFilters}
+      activeFilters={activeFilters}
+      disabled={disabled}
+    />
   );
 
   if (isMobile) {
     return (
       <div className="mobile-filters">
-        <FilterDrawer>{FilterContent}</FilterDrawer>
+        <FilterDrawer disabled={disabled}>{FilterContent}</FilterDrawer>
       </div>
     );
   }
@@ -56,8 +60,16 @@ const DatasetCatalog = ({ searchService }) => {
       className={`hdc-dataset-catalog ${selectedDataset ? "detail-mode" : ""}`}
     >
       <div className="hdc-catalog-layout">
-        <FilterSection isMobile={false} isHidden={selectedDataset} />
-        <FilterSection isMobile={true} isHidden={selectedDataset} />
+        <FilterSection
+          isMobile={false}
+          isHidden={false}
+          disabled={selectedDataset}
+        />
+        <FilterSection
+          isMobile={true}
+          isHidden={false}
+          disabled={selectedDataset}
+        />
 
         <div className="hdc-catalog-content">
           {!selectedDataset && <ActiveFiltersBar />}

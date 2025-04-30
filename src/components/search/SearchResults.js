@@ -5,7 +5,6 @@ import FilterDrawer from "../filters/FilterDrawer";
 import UnifiedFilterBar from "../filters/UnifiedFilterBar";
 import ViewControls from "../common/ViewControls";
 import SearchBar from "../home/SearchBar";
-import RelatedSuggestions from "./RelatedSuggestions";
 import DatasetDetail from "../detail/DatasetDetail";
 import { useFilters } from "../../context/FilterContext";
 import { useView } from "../../context/ViewContext";
@@ -48,14 +47,6 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
           compact={true}
           disabled={!!selectedDataset}
         />
-
-        {searchQuery && !selectedDataset && (
-          <RelatedSuggestions
-            query={searchQuery}
-            onSuggestionClick={(suggestion) => setSearchQuery(suggestion)}
-            searchService={searchService}
-          />
-        )}
       </div>
 
       {/* Unified filter bar - always visible but disabled in detail view */}
@@ -63,19 +54,21 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
 
       <div className="search-catalog-layout">
         {/* Left sidebar with filters - always present in structure */}
-        <div className={`mobile-filters ${selectedDataset ? "hidden" : ""}`}>
-          <FilterDrawer>
+        <div className="mobile-filters">
+          <FilterDrawer disabled={!!selectedDataset}>
             <DatasetFilters
               onFilterChange={setFilters}
               activeFilters={activeFilters}
+              disabled={!!selectedDataset}
             />
           </FilterDrawer>
         </div>
 
-        <div className={`desktop-filters ${selectedDataset ? "hidden" : ""}`}>
+        <div className="desktop-filters">
           <DatasetFilters
             onFilterChange={setFilters}
             activeFilters={activeFilters}
+            disabled={!!selectedDataset}
           />
         </div>
 

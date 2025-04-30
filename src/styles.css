@@ -2075,7 +2075,11 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 }
 
 .search-catalog.detail-mode .desktop-filters,
-.search-catalog.detail-mode .mobile-filters,
+.search-catalog.detail-mode .mobile-filters {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 .search-catalog.detail-mode .search-catalog-header,
 .search-catalog.detail-mode .unified-filter-bar {
   display: none;
@@ -2132,7 +2136,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   opacity: 0;
-  transform: translateY(20px);
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
@@ -2280,9 +2283,9 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .hdc-back-button {
   display: flex;
   align-items: center;
-  background-color: #f3f4f6;
-  color: #4b5563;
-  border: 1px solid #d1d5db;
+  background-color: #4f46e5; /* Purple color matching other primary buttons */
+  color: white;
+  border: none;
   border-radius: 6px;
   padding: 8px 16px;
   font-size: 14px;
@@ -2292,13 +2295,23 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 }
 
 .hdc-back-button:hover {
-  background-color: #e5e7eb;
-  color: #374151;
+  background-color: #4338ca; /* Slightly darker purple on hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hdc-back-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+}
+
+/* SVG icon within the button */
+.hdc-back-button svg {
+  margin-right: 8px;
+  stroke-width: 2px;
 }
 
 .hdc-controls-section.detail-mode {
   margin-bottom: 0;
-  background-color: #f9fafb;
 }
 
 /* Responsive Styles */
@@ -2320,17 +2333,17 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   }
 }
 
-/* Disabled states for filter bar and search */
+/* Disabled states for filter bar, sidebar, and search */
 .unified-filter-bar-disabled {
   opacity: 0.8;
-  pointer-events: none;
+  cursor: not-allowed;
 }
 
 .unified-filter-bar-disabled .unified-filter-tag {
   background-color: #f3f4f6;
   border-color: #e5e7eb;
   color: #6b7280;
-  cursor: default;
+  cursor: not-allowed;
 }
 
 .unified-filter-bar-disabled .unified-filter-remove {
@@ -2343,6 +2356,29 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 
 .search-bar-disabled input,
 .search-bar-disabled button {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.hdc-filters-disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.hdc-filters-disabled .filter-section-header {
+  cursor: not-allowed;
+}
+
+.hdc-filters-disabled .filter-option input[type="checkbox"] {
+  cursor: not-allowed;
+}
+
+.hdc-filters-disabled .filter-option label {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.filter-drawer-disabled .filter-drawer-handle {
   opacity: 0.7;
   cursor: not-allowed;
 }
@@ -2366,7 +2402,6 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 
 /* View controls consistency */
 .hdc-controls-section.detail-mode {
-  background-color: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
   margin-bottom: 0;
 }

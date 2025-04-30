@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const FilterDrawer = ({ children }) => {
+const FilterDrawer = ({ children, disabled = false }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const drawerRef = useRef(null);
   const previousFocusRef = useRef(null);
 
   // Toggle the drawer state
   const toggleDrawer = (e) => {
+    if (disabled) return; // Prevent toggling if disabled
     e.preventDefault();
     setIsExpanded(!isExpanded);
   };
@@ -109,29 +110,34 @@ const FilterDrawer = ({ children }) => {
 
       {/* Drawer */}
       <div
-        className={`filter-drawer ${isExpanded ? "expanded" : ""}`}
+        className={`filter-drawer ${isExpanded ? "expanded" : ""} ${
+          disabled ? "filter-drawer-disabled" : ""
+        }`}
         ref={drawerRef}
         role="dialog"
         aria-modal={isExpanded ? "true" : "false"}
         aria-label="Filter options"
         aria-hidden={!isExpanded}
+        aria-disabled={disabled}
         onKeyDown={handleKeyDown}
       >
         {/* Handle for toggling */}
         <div
-          className="filter-drawer-handle"
-          onClick={toggleDrawer}
+          className={`filter-drawer-handle ${disabled ? "disabled" : ""}`}
+          onClick={disabled ? undefined : toggleDrawer}
           onKeyDown={(e) => {
+            if (disabled) return;
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
               toggleDrawer(e);
             }
           }}
-          tabIndex="0"
+          tabIndex={disabled ? "-1" : "0"}
           role="button"
           aria-expanded={isExpanded}
           aria-controls="filter-drawer-content"
           aria-label={isExpanded ? "Close filters" : "Open filters"}
+          aria-disabled={disabled}
         >
           <div className="handle-icon" aria-hidden="true">
             {isExpanded ? "▼" : "▲"}
