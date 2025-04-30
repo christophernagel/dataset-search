@@ -20,7 +20,7 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
   } = useFilters();
 
   const { viewMode, sortBy, setViewMode, setSortBy } = useView();
-  
+
   // New state for handling selected dataset and transitions
   const [selectedDataset, setSelectedDataset] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -54,8 +54,10 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
   }, [searchService, searchQuery, activeFilters]);
 
   return (
-    <div className={`search-catalog ${selectedDataset ? 'detail-mode' : ''}`}>
-      <div className={`search-catalog-header ${selectedDataset ? 'hidden' : ''}`}>
+    <div className={`search-catalog ${selectedDataset ? "detail-mode" : ""}`}>
+      <div
+        className={`search-catalog-header ${selectedDataset ? "hidden" : ""}`}
+      >
         <SearchBar
           onSearch={setSearchQuery}
           initialQuery={searchQuery}
@@ -67,11 +69,11 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
         filters={activeFilters}
         onRemoveFilter={removeFilter}
         onClearFilters={clearFilters}
-        className={selectedDataset ? 'hidden' : ''}
+        className={selectedDataset ? "hidden" : ""}
       />
 
       <div className="search-catalog-layout">
-        <div className={`mobile-filters ${selectedDataset ? 'hidden' : ''}`}>
+        <div className={`mobile-filters ${selectedDataset ? "hidden" : ""}`}>
           <FilterDrawer>
             <DatasetFilters
               onFilterChange={setFilters}
@@ -80,7 +82,7 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
           </FilterDrawer>
         </div>
 
-        <div className={`desktop-filters ${selectedDataset ? 'hidden' : ''}`}>
+        <div className={`desktop-filters ${selectedDataset ? "hidden" : ""}`}>
           <DatasetFilters
             onFilterChange={setFilters}
             activeFilters={activeFilters}
@@ -122,13 +124,13 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
               </button>
             </div>
           ) : (
-            <DatasetGrid 
-              datasets={searchResults} 
+            <DatasetGrid
+              datasets={searchResults}
               viewMode={viewMode}
               onSelectDataset={handleSelectDataset}
               selectedDataset={selectedDataset}
               onBackToCatalog={handleBackToCatalog}
-              isTransitioning={isTransitioning} 
+              isTransitioning={isTransitioning}
             />
           )}
         </div>

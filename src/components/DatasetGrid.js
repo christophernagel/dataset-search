@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import DatasetCard from "./common/DatasetCard";
 import DatasetDetail from "./detail/DatasetDetail";
 import { useWindowSize } from "../hooks/useWindowSize";
 import { useView } from "../context/ViewContext";
 
-const DatasetGrid = ({ datasets }) => {
+const DatasetGrid = ({ datasets, onDatasetSelect, onBackToCatalog }) => {
   const { viewMode } = useView();
   const { width } = useWindowSize();
   const [selectedDataset, setSelectedDataset] = useState(null);
@@ -32,6 +32,11 @@ const DatasetGrid = ({ datasets }) => {
     setTimeout(() => {
       setSelectedDataset(dataset);
       setIsTransitioning(false);
+
+      // Notify parent component about this selection
+      if (onDatasetSelect) {
+        onDatasetSelect(dataset);
+      }
     }, 300);
   };
 
@@ -42,16 +47,25 @@ const DatasetGrid = ({ datasets }) => {
     setTimeout(() => {
       setSelectedDataset(null);
       setIsTransitioning(false);
+
+      // Notify parent component
+      if (onBackToCatalog) {
+        onBackToCatalog();
+      }
     }, 300);
   };
 
   // If showing detail view
   if (selectedDataset) {
     return (
-      <div className={`hdc-dataset-container detail-mode ${isTransitioning ? "transitioning" : ""}`}>
-        <DatasetDetail 
-          dataset={selectedDataset} 
-          onBackToCatalog={handleBackToCatalog} 
+      <div
+        className={`hdc-dataset-container detail-mode ${
+          isTransitioning ? "transitioning" : ""
+        }`}
+      >
+        <DatasetDetail
+          dataset={selectedDataset}
+          onBackToCatalog={handleBackToCatalog}
         />
       </div>
     );
@@ -88,9 +102,9 @@ const DatasetGrid = ({ datasets }) => {
   const renderListView = () => (
     <ul className="datasets-list">
       {datasets.map((dataset) => (
-        <li 
-          key={dataset.id} 
-          className="dataset-list-item" 
+        <li
+          key={dataset.id}
+          className="dataset-list-item"
           onClick={() => handleSelectDataset(dataset)}
         >
           <DatasetCard {...dataset} />
@@ -103,9 +117,9 @@ const DatasetGrid = ({ datasets }) => {
   const renderDetailView = () => (
     <div className="datasets-detail">
       {datasets.map((dataset) => (
-        <div 
-          key={dataset.id} 
-          className="dataset-detail-item" 
+        <div
+          key={dataset.id}
+          className="dataset-detail-item"
           onClick={() => handleSelectDataset(dataset)}
         >
           <DatasetCard {...dataset} />
@@ -115,7 +129,11 @@ const DatasetGrid = ({ datasets }) => {
   );
 
   return (
-    <div className={`hdc-dataset-container ${viewMode}-view ${isTransitioning ? "transitioning" : ""}`}>
+    <div
+      className={`hdc-dataset-container ${viewMode}-view ${
+        isTransitioning ? "transitioning" : ""
+      }`}
+    >
       {viewMode === "grid" && renderGridView()}
       {viewMode === "list" && renderListView()}
       {viewMode === "detail" && renderDetailView()}

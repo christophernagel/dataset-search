@@ -9,13 +9,15 @@ const ViewControls = ({
   searchQuery,
   selectedDataset,
   onBackToCatalog,
-  isTransitioning
+  isTransitioning,
 }) => {
   // If we're in dataset detail mode
   if (selectedDataset) {
     return (
       <div
-        className={`hdc-controls-section detail-mode ${isTransitioning ? 'transitioning' : ''}`}
+        className={`hdc-controls-section detail-mode ${
+          isTransitioning ? "transitioning" : ""
+        }`}
         role="region"
         aria-label="Dataset detail controls"
       >
@@ -60,7 +62,9 @@ const ViewControls = ({
 
   return (
     <div
-      className={`hdc-controls-section ${isTransitioning ? 'transitioning' : ''}`}
+      className={`hdc-controls-section ${
+        isTransitioning ? "transitioning" : ""
+      }`}
       role="region"
       aria-label="View controls"
     >
