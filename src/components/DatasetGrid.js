@@ -1,14 +1,11 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback } from "react";
 import DatasetCard from "./common/DatasetCard";
-import DatasetDetail from "./detail/DatasetDetail";
 import { useWindowSize } from "../hooks/useWindowSize";
 import { useView } from "../context/ViewContext";
 
-const DatasetGrid = ({ datasets, onDatasetSelect, onBackToCatalog }) => {
-  const { viewMode } = useView();
+const DatasetGrid = ({ datasets }) => {
   const { width } = useWindowSize();
-  const [selectedDataset, setSelectedDataset] = useState(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const { viewMode, selectDataset, isTransitioning } = useView();
 
   // Calculate grid columns based on viewport width
   const getGridColumns = useCallback(() => {
@@ -27,49 +24,8 @@ const DatasetGrid = ({ datasets, onDatasetSelect, onBackToCatalog }) => {
 
   // Handle dataset selection
   const handleSelectDataset = (dataset) => {
-    setIsTransitioning(true);
-    // Small delay for transition effect
-    setTimeout(() => {
-      setSelectedDataset(dataset);
-      setIsTransitioning(false);
-
-      // Notify parent component about this selection
-      if (onDatasetSelect) {
-        onDatasetSelect(dataset);
-      }
-    }, 300);
+    selectDataset(dataset);
   };
-
-  // Handle back to catalog
-  const handleBackToCatalog = () => {
-    setIsTransitioning(true);
-    // Small delay for transition effect
-    setTimeout(() => {
-      setSelectedDataset(null);
-      setIsTransitioning(false);
-
-      // Notify parent component
-      if (onBackToCatalog) {
-        onBackToCatalog();
-      }
-    }, 300);
-  };
-
-  // If showing detail view
-  if (selectedDataset) {
-    return (
-      <div
-        className={`hdc-dataset-container detail-mode ${
-          isTransitioning ? "transitioning" : ""
-        }`}
-      >
-        <DatasetDetail
-          dataset={selectedDataset}
-          onBackToCatalog={handleBackToCatalog}
-        />
-      </div>
-    );
-  }
 
   // If no datasets match, show empty message
   if (datasets.length === 0) {

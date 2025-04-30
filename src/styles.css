@@ -2113,8 +2113,12 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Dataset Detail Container */
@@ -2302,16 +2306,93 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   .hdc-dataset-detail {
     padding: 16px;
   }
-  
+
   .hdc-dataset-detail-content {
     flex-direction: column;
   }
-  
+
   .hdc-dataset-detail-info-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .hdc-dataset-detail-title {
     font-size: 24px;
   }
+}
+
+/* Disabled states for filter bar and search */
+.unified-filter-bar-disabled {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.unified-filter-bar-disabled .unified-filter-tag {
+  background-color: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #6b7280;
+  cursor: default;
+}
+
+.unified-filter-bar-disabled .unified-filter-remove {
+  display: none;
+}
+
+.unified-filter-bar-disabled .unified-clear-button {
+  display: none;
+}
+
+.search-bar-disabled input,
+.search-bar-disabled button {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Dataset detail view layout adjustments */
+.search-catalog.detail-mode .search-catalog-layout {
+  display: flex;
+  gap: 0;
+}
+
+.search-catalog.detail-mode .search-catalog-content {
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.hdc-dataset-container.detail-mode {
+  padding: 0;
+  margin: 0 auto;
+}
+
+/* View controls consistency */
+.hdc-controls-section.detail-mode {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 0;
+}
+
+.hdc-controls-section.detail-mode .hdc-controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hdc-controls-section.detail-mode .hdc-results-info {
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Transition improvements */
+.transitioning {
+  filter: blur(4px);
+  opacity: 0.7;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
+}
+
+/* Dataset detail content */
+.hdc-dataset-detail {
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-top: 0;
 }

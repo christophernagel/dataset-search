@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import DatasetGrid from "../DatasetGrid";
 import DatasetFilters from "../filters/DatasetFilters";
 import FilterDrawer from "../filters/FilterDrawer";
@@ -6,6 +6,7 @@ import UnifiedFilterBar from "../filters/UnifiedFilterBar";
 import ViewControls from "../common/ViewControls";
 import SearchBar from "../home/SearchBar";
 import RelatedSuggestions from "./RelatedSuggestions";
+import DatasetDetail from "../detail/DatasetDetail";
 import { useFilters } from "../../context/FilterContext";
 import { useView } from "../../context/ViewContext";
 
@@ -19,31 +20,15 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
     clearFilters,
   } = useFilters();
 
-  const { viewMode, sortBy, setViewMode, setSortBy } = useView();
-
-  // New state for handling selected dataset and transitions
-  const [selectedDataset, setSelectedDataset] = useState(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
-  // Handle dataset selection
-  const handleSelectDataset = (dataset) => {
-    setIsTransitioning(true);
-    // Small delay for transition effect
-    setTimeout(() => {
-      setSelectedDataset(dataset);
-      setIsTransitioning(false);
-    }, 300);
-  };
-
-  // Handle back to catalog
-  const handleBackToCatalog = () => {
-    setIsTransitioning(true);
-    // Small delay for transition effect
-    setTimeout(() => {
-      setSelectedDataset(null);
-      setIsTransitioning(false);
-    }, 300);
-  };
+  const {
+    viewMode,
+    sortBy,
+    setViewMode,
+    setSortBy,
+    selectedDataset,
+    clearSelectedDataset,
+    isTransitioning,
+  } = useView();
 
   // Get search results
   const searchResults = React.useMemo(() => {
@@ -54,25 +39,30 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
   }, [searchService, searchQuery, activeFilters]);
 
   return (
-    <div className={`search-catalog ${selectedDataset ? "detail-mode" : ""}`}>
-      <div
-        className={`search-catalog-header ${selectedDataset ? "hidden" : ""}`}
-      >
+    <div className="search-catalog">
+      {/* Header with search bar - always visible */}
+      <div className="search-catalog-header">
         <SearchBar
           onSearch={setSearchQuery}
           initialQuery={searchQuery}
           compact={true}
+          disabled={!!selectedDataset}
         />
+
+        {searchQuery && !selectedDataset && (
+          <RelatedSuggestions
+            query={searchQuery}
+            onSuggestionClick={(suggestion) => setSearchQuery(suggestion)}
+            searchService={searchService}
+          />
+        )}
       </div>
 
-      <UnifiedFilterBar
-        filters={activeFilters}
-        onRemoveFilter={removeFilter}
-        onClearFilters={clearFilters}
-        className={selectedDataset ? "hidden" : ""}
-      />
+      {/* Unified filter bar - always visible but disabled in detail view */}
+      <UnifiedFilterBar disabled={!!selectedDataset} />
 
       <div className="search-catalog-layout">
+        {/* Left sidebar with filters - always present in structure */}
         <div className={`mobile-filters ${selectedDataset ? "hidden" : ""}`}>
           <FilterDrawer>
             <DatasetFilters
@@ -89,7 +79,9 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
           />
         </div>
 
+        {/* Main content area */}
         <div className="search-catalog-content">
+          {/* View controls - shows either dataset controls or catalog controls */}
           <ViewControls
             viewMode={viewMode}
             onViewChange={setViewMode}
@@ -97,12 +89,21 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
             onSortChange={setSortBy}
             resultCount={searchResults.length}
             searchQuery={searchQuery}
-            selectedDataset={selectedDataset}
-            onBackToCatalog={handleBackToCatalog}
             isTransitioning={isTransitioning}
+            selectedDataset={selectedDataset}
+            onBackToCatalog={clearSelectedDataset}
           />
 
-          {searchResults.length === 0 && !selectedDataset ? (
+          {/* Content - either the dataset grid or dataset detail */}
+          {selectedDataset ? (
+            <div
+              className={`hdc-dataset-container detail-view ${
+                isTransitioning ? "transitioning" : ""
+              }`}
+            >
+              <DatasetDetail dataset={selectedDataset} />
+            </div>
+          ) : searchResults.length === 0 ? (
             <div className="hdc-search-no-results">
               <h2>No datasets found</h2>
               <p>
@@ -124,14 +125,7 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
               </button>
             </div>
           ) : (
-            <DatasetGrid
-              datasets={searchResults}
-              viewMode={viewMode}
-              onSelectDataset={handleSelectDataset}
-              selectedDataset={selectedDataset}
-              onBackToCatalog={handleBackToCatalog}
-              isTransitioning={isTransitioning}
-            />
+            <DatasetGrid datasets={searchResults} />
           )}
         </div>
       </div>

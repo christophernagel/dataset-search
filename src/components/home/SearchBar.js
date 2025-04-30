@@ -1,7 +1,12 @@
 // components/home/SearchBar.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-const SearchBar = ({ onSearch, initialQuery = '', compact = false }) => {
+const SearchBar = ({
+  onSearch,
+  initialQuery = "",
+  compact = false,
+  disabled = false,
+}) => {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
 
   // Update local state when initialQuery changes
@@ -11,15 +16,17 @@ const SearchBar = ({ onSearch, initialQuery = '', compact = false }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
+    if (searchQuery.trim() && !disabled) {
       onSearch(searchQuery);
     }
   };
 
   return (
-    <form 
-      onSubmit={handleSubmit} 
-      className={`search-bar ${compact ? 'search-bar-compact' : 'search-bar-large'}`}
+    <form
+      onSubmit={handleSubmit}
+      className={`search-bar ${
+        compact ? "search-bar-compact" : "search-bar-large"
+      } ${disabled ? "search-bar-disabled" : ""}`}
     >
       <div className="search-input-container">
         <input
@@ -29,8 +36,14 @@ const SearchBar = ({ onSearch, initialQuery = '', compact = false }) => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           aria-label="Search datasets"
+          disabled={disabled}
         />
-        <button type="submit" className="search-button" aria-label="Submit search">
+        <button
+          type="submit"
+          className="search-button"
+          aria-label="Submit search"
+          disabled={disabled}
+        >
           Search
         </button>
       </div>

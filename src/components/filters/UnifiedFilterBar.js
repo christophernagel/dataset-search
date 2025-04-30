@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useFilters } from "../../context/FilterContext";
 
-const UnifiedFilterBar = () => {
+const UnifiedFilterBar = ({ disabled = false }) => {
   const {
     activeFilters,
     removeFilter,
@@ -54,9 +54,12 @@ const UnifiedFilterBar = () => {
   const activeFiltersList = getActiveFilters();
   const hasActiveFilters = activeFiltersList.length > 0 || searchQuery;
 
+  // Apply disabled state class if needed
+  const disabledClass = disabled ? "unified-filter-bar-disabled" : "";
+
   return (
     <div
-      className="unified-filter-bar"
+      className={`unified-filter-bar ${disabledClass}`}
       role="region"
       aria-label="Active filters"
     >
@@ -84,22 +87,28 @@ const UnifiedFilterBar = () => {
             {searchQuery && (
               <button
                 className="unified-filter-tag unified-search-tag"
-                onClick={() => setSearchQuery("")}
+                onClick={() => !disabled && setSearchQuery("")}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
+                  if (!disabled && (e.key === "Enter" || e.key === " ")) {
                     e.preventDefault();
                     setSearchQuery("");
                   }
                 }}
-                aria-label={`Clear search: ${searchQuery}`}
-                tabIndex="0"
+                aria-label={`${
+                  disabled ? "Search" : "Clear search"
+                }: ${searchQuery}`}
+                tabIndex={disabled ? "-1" : "0"}
+                disabled={disabled}
+                aria-disabled={disabled}
               >
                 <span className="unified-filter-text">
                   Search: {searchQuery}
                 </span>
-                <span className="unified-filter-remove" aria-hidden="true">
-                  ×
-                </span>
+                {!disabled && (
+                  <span className="unified-filter-remove" aria-hidden="true">
+                    ×
+                  </span>
+                )}
               </button>
             )}
 
@@ -107,29 +116,35 @@ const UnifiedFilterBar = () => {
               <button
                 key={`${category}-${value}`}
                 className="unified-filter-tag"
-                onClick={() => removeFilter(category, value)}
+                onClick={() => !disabled && removeFilter(category, value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
+                  if (!disabled && (e.key === "Enter" || e.key === " ")) {
                     e.preventDefault();
                     removeFilter(category, value);
                   }
                 }}
-                aria-label={`Remove filter ${category}: ${value}`}
-                tabIndex="0"
+                aria-label={`${
+                  disabled ? "" : "Remove filter "
+                }${category}: ${value}`}
+                tabIndex={disabled ? "-1" : "0"}
+                disabled={disabled}
+                aria-disabled={disabled}
               >
                 <span className="unified-filter-text">
                   {category}: {value}
                 </span>
-                <span className="unified-filter-remove" aria-hidden="true">
-                  ×
-                </span>
+                {!disabled && (
+                  <span className="unified-filter-remove" aria-hidden="true">
+                    ×
+                  </span>
+                )}
               </button>
             ))}
           </div>
         </div>
 
         <div className="unified-filter-right">
-          {hasActiveFilters && (
+          {hasActiveFilters && !disabled && (
             <button
               className="unified-clear-button"
               onClick={clearFilters}

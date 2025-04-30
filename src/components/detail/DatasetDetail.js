@@ -1,9 +1,7 @@
 // src/components/detail/DatasetDetail.js
 import React, { useState, useEffect } from "react";
-import { useView } from "../../context/ViewContext";
-import { useFilters } from "../../context/FilterContext";
 
-const DatasetDetail = ({ dataset, onBackToCatalog }) => {
+const DatasetDetail = ({ dataset }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Simulate loading for transition effect
@@ -19,9 +17,6 @@ const DatasetDetail = ({ dataset, onBackToCatalog }) => {
     return (
       <div className="hdc-dataset-detail-empty">
         <p>No dataset selected. Please select a dataset from the catalog.</p>
-        <button className="hdc-back-button" onClick={onBackToCatalog}>
-          Back to Catalog
-        </button>
       </div>
     );
   }
@@ -50,9 +45,20 @@ const DatasetDetail = ({ dataset, onBackToCatalog }) => {
       )}
 
       <div className="hdc-dataset-detail-header">
-        <div className="hdc-community-category" style={{ backgroundColor: `${categoryColor}20`, borderColor: categoryColor }}>
-          <span className="hdc-category-dot" style={{ backgroundColor: categoryColor }}></span>
-          <span className="hdc-category-label">{dataset.communityActionArea}</span>
+        <div
+          className="hdc-community-category"
+          style={{
+            backgroundColor: `${categoryColor}20`,
+            borderColor: categoryColor,
+          }}
+        >
+          <span
+            className="hdc-category-dot"
+            style={{ backgroundColor: categoryColor }}
+          ></span>
+          <span className="hdc-category-label">
+            {dataset.communityActionArea}
+          </span>
         </div>
         <h1 className="hdc-dataset-detail-title">{dataset.name}</h1>
       </div>
@@ -61,7 +67,9 @@ const DatasetDetail = ({ dataset, onBackToCatalog }) => {
         <div className="hdc-dataset-detail-main">
           <div className="hdc-dataset-detail-section">
             <h2 className="hdc-section-title">Description</h2>
-            <p className="hdc-dataset-detail-description">{dataset.description}</p>
+            <p className="hdc-dataset-detail-description">
+              {dataset.description}
+            </p>
           </div>
 
           <div className="hdc-dataset-detail-section">
@@ -99,8 +107,8 @@ const DatasetDetail = ({ dataset, onBackToCatalog }) => {
           <div className="hdc-dataset-detail-section">
             <h2 className="hdc-section-title">Actions</h2>
             <div className="hdc-dataset-detail-actions">
-              <a 
-                href={dataset.pageUrl || "#"} 
+              <a
+                href={dataset.pageUrl || "#"}
                 className="hdc-dataset-action-button hdc-view-button"
                 onClick={(e) => {
                   if (!dataset.pageUrl) e.preventDefault();
