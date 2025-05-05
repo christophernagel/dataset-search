@@ -1898,8 +1898,10 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 /* Dataset Info Grid */
 .hdc-dataset-detail-info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Fixed 3 columns */
+  grid-template-rows: repeat(2, auto); /* 2 rows, height based on content */
   gap: var(--spacing-l) var(--spacing-m);
+  max-width: 100%;
 }
 
 .hdc-info-item {
@@ -2299,4 +2301,104 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 .hdc-controls-section.detail-mode .hdc-results-info {
   font-weight: 500;
   color: var(--color-text-primary);
+}
+
+/* Filterable attribute styles */
+.hdc-attribute.filterable,
+.hdc-community-action-area.filterable,
+.hdc-info-item.filterable,
+.hdc-community-category.filterable {
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.hdc-attribute.filterable:hover,
+.hdc-community-action-area.filterable:hover {
+  background-color: var(--color-background-hover);
+  border-radius: var(--border-radius-sm);
+  padding: 2px 4px;
+  margin: -2px -4px;
+  box-shadow: var(--shadow-sm);
+}
+
+.hdc-attribute.filterable:hover::after,
+.hdc-community-action-area.filterable:hover::after {
+  content: "Filter by this";
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  background-color: var(--color-text-primary);
+  color: white;
+  padding: 4px 8px;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.hdc-attribute.filterable:hover:hover::after,
+.hdc-community-action-area.filterable:hover:hover::after {
+  opacity: 1;
+}
+
+.hdc-info-item.filterable:hover {
+  background-color: var(--color-background-hover);
+  padding: 8px;
+  margin: -8px;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.hdc-info-item.filterable:hover .hdc-info-value {
+  color: var(--color-primary);
+}
+
+.hdc-info-item.filterable:hover::after {
+  content: "Return to catalog, filtered by this";
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  margin-top: 4px;
+}
+
+.hdc-community-category.filterable:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.hdc-community-category.filterable:hover::after {
+  content: "Return to catalog, filtered by this category";
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+/* Focus states for keyboard navigation */
+.hdc-attribute.filterable:focus,
+.hdc-community-action-area.filterable:focus,
+.hdc-info-item.filterable:focus,
+.hdc-community-category.filterable:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  background-color: var(--color-background-hover);
+}
+
+/* Improve tap target sizes on mobile */
+@media (max-width: 768px) {
+  .hdc-attribute.filterable,
+  .hdc-community-action-area.filterable {
+    padding: 4px 6px;
+    margin: -4px -6px;
+  }
+
+  .hdc-info-item.filterable {
+    padding: 8px 12px;
+    margin: -8px -12px;
+  }
 }

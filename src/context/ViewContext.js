@@ -1,33 +1,38 @@
-// context/ViewContext.js
 import React, { createContext, useContext, useState, useCallback } from "react";
 
 const ViewContext = createContext(null);
 
 export function ViewProvider({ children }) {
+  /* "catalog" | "detail" | … */
+  const [view, setView] = useState("catalog");
   const [viewMode, setViewMode] = useState("grid");
   const [sortBy, setSortBy] = useState("relevance");
   const [selectedDataset, setSelectedDataset] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  /** open detail panel */
   const selectDataset = useCallback((dataset) => {
     setIsTransitioning(true);
-    // Small delay for transition effect
     setTimeout(() => {
       setSelectedDataset(dataset);
+      setView("detail");
       setIsTransitioning(false);
     }, 300);
   }, []);
 
+  /** return to catalog */
   const clearSelectedDataset = useCallback(() => {
     setIsTransitioning(true);
-    // Small delay for transition effect
     setTimeout(() => {
       setSelectedDataset(null);
+      setView("catalog");
       setIsTransitioning(false);
     }, 300);
   }, []);
 
   const value = {
+    view,
+    setView,
     viewMode,
     sortBy,
     selectedDataset,

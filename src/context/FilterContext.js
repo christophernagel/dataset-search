@@ -8,12 +8,34 @@ const initialState = {
   searchQuery: "",
 };
 
+// Mapping between dataset properties and filter categories
+const filterMappings = {
+  "communityActionArea": "Community Action Areas",
+  "source": "Source",
+  "type": "Categories",
+  "dataFormat": "Data Type",
+  "dataTopic": "Data Topic"
+};
+
 function filterReducer(state, action) {
   switch (action.type) {
     case "SET_FILTERS":
       return { ...state, activeFilters: action.payload };
     case "SET_SEARCH_QUERY":
       return { ...state, searchQuery: action.payload };
+    case "SET_FILTER_BY_ATTRIBUTE":
+      const { field, value } = action.payload;
+      const filterCategory = filterMappings[field];
+      
+      if (!filterCategory) return state;
+      
+      const newFilters = { ...state.activeFilters };
+      newFilters[filterCategory] = { 
+        ...newFilters[filterCategory],
+        [value]: true 
+      };
+      
+      return { ...state, activeFilters: newFilters };
     case "REMOVE_FILTER": {
       const { category, value } = action.payload;
       const newFilters = { ...state.activeFilters };
@@ -47,6 +69,10 @@ export function FilterProvider({ children }) {
     removeFilter: (category, value) =>
       dispatch({ type: "REMOVE_FILTER", payload: { category, value } }),
     clearFilters: () => dispatch({ type: "CLEAR_FILTERS" }),
+    setFilterByAttribute: (field, value) =>
+      dispatch({ type: "SET_FILTER_BY_ATTRIBUTE", payload: { field, value } }),
+    // Expose filter mappings for components
+    filterMappings
   };
 
   return (

@@ -1,14 +1,14 @@
-// src/components/common/DatasetCard.js
 import React from "react";
+import { useFilters } from "../../context/FilterContext";
 
-// Color coding for Community Action Areas
+/* ---------- color map ---------- */
 const communityActionAreaColors = {
-  "Promoting Healthy Child Development": "#FF6B6B", // Red
-  "Youth Development and Civic Engagement": "#4ECDC4", // Teal
-  "Creating Protective Environments": "#45B7D1", // Blue
-  "Strengthening Economic Supports for Children and Families": "#98D85B", // Green
-  "Access to Safe and Stable Housing": "#FFD166", // Yellow
-  "Demographic Data": "#6A0572", // Purple
+  "Promoting Healthy Child Development": "#FF6B6B",
+  "Youth Development and Civic Engagement": "#4ECDC4",
+  "Creating Protective Environments": "#45B7D1",
+  "Strengthening Economic Supports for Children and Families": "#98D85B",
+  "Access to Safe and Stable Housing": "#FFD166",
+  "Demographic Data": "#6A0572",
 };
 
 const DatasetCard = ({
@@ -23,38 +23,40 @@ const DatasetCard = ({
   dateUpdated,
   dateCreated,
   pageUrl,
-  // New props for search results
   relevanceScore,
   matchedFields,
-  // New prop for handling selection
   onSelectDataset,
 }) => {
-  // Get the color for community action area if available
+  const { setFilterByAttribute, filterMappings } = useFilters();
   const areaColor = communityActionAreaColors[communityActionArea] || "#808080";
+
+  /* ---------- helpers ---------- */
+  const isFilterable = (field) => Boolean(filterMappings[field]);
+
+  const handleAttributeClick = (field, value, e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setFilterByAttribute(field, value);
+  };
+
+  const handleSelect = () => {
+    if (onSelectDataset) {
+      onSelectDataset(id);
+    } else if (pageUrl) {
+      window.open(pageUrl, "_self");
+    }
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      if (onSelectDataset) {
-        onSelectDataset();
-      } else if (pageUrl) {
-        window.open(pageUrl, "_self");
-      }
+      handleSelect();
     }
   };
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    if (onSelectDataset) {
-      onSelectDataset();
-    }
-  };
-
-  // Relevance indicator for search results
-  const renderRelevanceIndicator = () => {
-    if (relevanceScore === undefined) return null;
-
-    return (
+  /* ---------- small UI bits ---------- */
+  const renderRelevanceIndicator = () =>
+    relevanceScore !== undefined && (
       <div
         className="hdc-relevance-indicator"
         title={`Relevance: ${Math.round(relevanceScore * 100)}%`}
@@ -66,13 +68,9 @@ const DatasetCard = ({
         />
       </div>
     );
-  };
 
-  // Matched fields indicator
-  const renderMatchedFields = () => {
-    if (!matchedFields || matchedFields.length === 0) return null;
-
-    return (
+  const renderMatchedFields = () =>
+    matchedFields?.length ? (
       <div className="hdc-matched-fields">
         <span className="hdc-matched-label">Matched:</span>
         {matchedFields.map((field) => (
@@ -81,32 +79,52 @@ const DatasetCard = ({
           </span>
         ))}
       </div>
-    );
-  };
+    ) : null;
 
+  /* ---------- render ---------- */
   return (
     <div
       className="hdc-dataset-card"
-      tabIndex={onSelectDataset || pageUrl ? "0" : "-1"}
+      tabIndex={onSelectDataset || pageUrl ? 0 : -1}
       role={onSelectDataset || pageUrl ? "button" : "article"}
       aria-label={onSelectDataset ? `View details for ${name}` : undefined}
       onKeyDown={handleKeyDown}
-      onClick={handleClick}
+      onClick={(e) => {
+        e.preventDefault();
+        handleSelect();
+      }}
     >
       {renderRelevanceIndicator()}
 
       <div className="hdc-dataset-content">
-        {/* Community Action Area indicator */}
-        <div className="hdc-community-action-area">
+        {/* community action area */}
+        <div
+          className={`hdc-community-action-area ${
+            isFilterable("communityActionArea") ? "filterable" : ""
+          }`}
+          {...(isFilterable("communityActionArea")
+            ? {
+                onClick: (e) =>
+                  handleAttributeClick(
+                    "communityActionArea",
+                    communityActionArea,
+                    e
+                  ),
+                role: "button",
+                tabIndex: 0,
+                "aria-label": `Filter by community action area: ${communityActionArea}`,
+              }
+            : {})}
+        >
           <span
             className="hdc-area-dot"
             style={{ backgroundColor: areaColor }}
             aria-hidden="true"
-          ></span>
+          />
           <span className="hdc-area-label">{communityActionArea}</span>
         </div>
 
-        {/* Title as a hyperlink */}
+        {/* title */}
         <h3 className="hdc-dataset-title">
           {onSelectDataset ? (
             <span className="hdc-dataset-title-link">{name}</span>
@@ -117,43 +135,109 @@ const DatasetCard = ({
               onClick={(e) => {
                 if (!pageUrl) e.preventDefault();
               }}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {name}
             </a>
           )}
         </h3>
 
-        {/* Description */}
+        {/* description */}
         <p className="hdc-dataset-description">{description}</p>
 
         {renderMatchedFields()}
 
-        {/* Dataset attributes */}
+        {/* attributes */}
         <div className="hdc-dataset-attributes">
           {source && (
-            <div className="hdc-attribute">
+            <div
+              className={`hdc-attribute ${
+                isFilterable("source") ? "filterable" : ""
+              }`}
+              {...(isFilterable("source")
+                ? {
+                    onClick: (e) => handleAttributeClick("source", source, e),
+                    role: "button",
+                    tabIndex: 0,
+                    "aria-label": `Filter by source: ${source}`,
+                  }
+                : {})}
+            >
               <span className="hdc-attribute-label">Source:</span>
               <span className="hdc-attribute-value">{source}</span>
             </div>
           )}
 
           {dataFormat && (
-            <div className="hdc-attribute">
-              <span className="hdc-attribute-label">Data Format:</span>
+            <div
+              className={`hdc-attribute ${
+                isFilterable("dataFormat") ? "filterable" : ""
+              }`}
+              {...(isFilterable("dataFormat")
+                ? {
+                    onClick: (e) =>
+                      handleAttributeClick("dataFormat", dataFormat, e),
+                    role: "button",
+                    tabIndex: 0,
+                    "aria-label": `Filter by data format: ${dataFormat}`,
+                  }
+                : {})}
+            >
+              <span className="hdc-attribute-label">Data&nbsp;Format:</span>
               <span className="hdc-attribute-value">{dataFormat}</span>
+            </div>
+          )}
+
+          {type && (
+            <div
+              className={`hdc-attribute ${
+                isFilterable("type") ? "filterable" : ""
+              }`}
+              {...(isFilterable("type")
+                ? {
+                    onClick: (e) => handleAttributeClick("type", type, e),
+                    role: "button",
+                    tabIndex: 0,
+                    "aria-label": `Filter by category: ${type}`,
+                  }
+                : {})}
+            >
+              <span className="hdc-attribute-label">Category:</span>
+              <span className="hdc-attribute-value">{type}</span>
+            </div>
+          )}
+
+          {dataTopic && (
+            <div
+              className={`hdc-attribute ${
+                isFilterable("dataTopic") ? "filterable" : ""
+              }`}
+              {...(isFilterable("dataTopic")
+                ? {
+                    onClick: (e) =>
+                      handleAttributeClick("dataTopic", dataTopic, e),
+                    role: "button",
+                    tabIndex: 0,
+                    "aria-label": `Filter by data topic: ${dataTopic}`,
+                  }
+                : {})}
+            >
+              <span className="hdc-attribute-label">Data&nbsp;Topic:</span>
+              <span className="hdc-attribute-value">{dataTopic}</span>
             </div>
           )}
 
           {dateUpdated && (
             <div className="hdc-attribute">
-              <span className="hdc-attribute-label">Date Updated:</span>
+              <span className="hdc-attribute-label">Date&nbsp;Updated:</span>
               <span className="hdc-attribute-value">{dateUpdated}</span>
             </div>
           )}
 
           {dateCreated && (
             <div className="hdc-attribute">
-              <span className="hdc-attribute-label">Date Created:</span>
+              <span className="hdc-attribute-label">Date&nbsp;Created:</span>
               <span className="hdc-attribute-value">{dateCreated}</span>
             </div>
           )}

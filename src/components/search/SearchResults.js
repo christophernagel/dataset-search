@@ -37,6 +37,12 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
     return searchService.getFilteredDatasets(activeFilters);
   }, [searchService, searchQuery, activeFilters]);
 
+  // When an attribute is clicked in the detail view, 
+  // we need to go back to the catalog view
+  const handleDetailAttributeClick = () => {
+    clearSelectedDataset();
+  };
+
   return (
     <div className="search-catalog">
       {/* Header with search bar - always visible */}
@@ -93,6 +99,7 @@ const SearchResults = ({ searchService, onNavigateHome }) => {
               className={`hdc-dataset-container detail-view ${
                 isTransitioning ? "transitioning" : ""
               }`}
+              onClick={handleDetailAttributeClick}
             >
               <DatasetDetail dataset={selectedDataset} />
             </div>

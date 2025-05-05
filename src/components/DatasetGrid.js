@@ -22,11 +22,6 @@ const DatasetGrid = ({ datasets }) => {
     return Math.min(columns, 4);
   }, [width]);
 
-  // Handle dataset selection
-  const handleSelectDataset = (dataset) => {
-    selectDataset(dataset);
-  };
-
   // If no datasets match, show empty message
   if (datasets.length === 0) {
     return (
@@ -47,8 +42,11 @@ const DatasetGrid = ({ datasets }) => {
       }}
     >
       {datasets.map((dataset) => (
-        <div key={dataset.id} onClick={() => handleSelectDataset(dataset)}>
-          <DatasetCard {...dataset} />
+        <div key={dataset.id}>
+          <DatasetCard
+            {...dataset}
+            onSelectDataset={() => selectDataset(dataset)}
+          />
         </div>
       ))}
     </div>
@@ -58,12 +56,11 @@ const DatasetGrid = ({ datasets }) => {
   const renderListView = () => (
     <ul className="datasets-list">
       {datasets.map((dataset) => (
-        <li
-          key={dataset.id}
-          className="dataset-list-item"
-          onClick={() => handleSelectDataset(dataset)}
-        >
-          <DatasetCard {...dataset} />
+        <li key={dataset.id} className="dataset-list-item">
+          <DatasetCard
+            {...dataset}
+            onSelectDataset={() => selectDataset(dataset)}
+          />
         </li>
       ))}
     </ul>
@@ -73,12 +70,11 @@ const DatasetGrid = ({ datasets }) => {
   const renderDetailView = () => (
     <div className="datasets-detail">
       {datasets.map((dataset) => (
-        <div
-          key={dataset.id}
-          className="dataset-detail-item"
-          onClick={() => handleSelectDataset(dataset)}
-        >
-          <DatasetCard {...dataset} />
+        <div key={dataset.id} className="dataset-detail-item">
+          <DatasetCard
+            {...dataset}
+            onSelectDataset={() => selectDataset(dataset)}
+          />
         </div>
       ))}
     </div>
