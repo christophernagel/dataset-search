@@ -1,5 +1,6 @@
 import React from "react";
 import { useFilters } from "../../context/FilterContext";
+import { useView } from "../../context/ViewContext";
 
 /* ---------- color map ---------- */
 const communityActionAreaColors = {
@@ -27,7 +28,8 @@ const DatasetCard = ({
   matchedFields,
   onSelectDataset,
 }) => {
-  const { setFilterByAttribute, filterMappings } = useFilters();
+  const { filterMappings } = useFilters();
+  const { selectAttribute } = useView();
   const areaColor = communityActionAreaColors[communityActionArea] || "#808080";
 
   /* ---------- helpers ---------- */
@@ -36,12 +38,13 @@ const DatasetCard = ({
   const handleAttributeClick = (field, value, e) => {
     e.stopPropagation();
     e.preventDefault();
-    setFilterByAttribute(field, value);
+    // navigate to attribute detail
+    selectAttribute(field, value);
   };
 
   const handleSelect = () => {
     if (onSelectDataset) {
-      onSelectDataset(id);
+      onSelectDataset();
     } else if (pageUrl) {
       window.open(pageUrl, "_self");
     }
@@ -55,8 +58,8 @@ const DatasetCard = ({
   };
 
   /* ---------- small UI bits ---------- */
-  const renderRelevanceIndicator = () =>
-    relevanceScore !== undefined && (
+  const renderRelevanceIndicator =
+    relevanceScore !== undefined ? (
       <div
         className="hdc-relevance-indicator"
         title={`Relevance: ${Math.round(relevanceScore * 100)}%`}
@@ -67,19 +70,18 @@ const DatasetCard = ({
           aria-label={`Relevance score: ${Math.round(relevanceScore * 100)}%`}
         />
       </div>
-    );
-
-  const renderMatchedFields = () =>
-    matchedFields?.length ? (
-      <div className="hdc-matched-fields">
-        <span className="hdc-matched-label">Matched:</span>
-        {matchedFields.map((field) => (
-          <span key={field} className="hdc-matched-field">
-            {field}
-          </span>
-        ))}
-      </div>
     ) : null;
+
+  const renderMatchedFields = matchedFields?.length ? (
+    <div className="hdc-matched-fields">
+      <span className="hdc-matched-label">Matched:</span>
+      {matchedFields.map((field) => (
+        <span key={field} className="hdc-matched-field">
+          {field}
+        </span>
+      ))}
+    </div>
+  ) : null;
 
   /* ---------- render ---------- */
   return (
@@ -89,12 +91,9 @@ const DatasetCard = ({
       role={onSelectDataset || pageUrl ? "button" : "article"}
       aria-label={onSelectDataset ? `View details for ${name}` : undefined}
       onKeyDown={handleKeyDown}
-      onClick={(e) => {
-        e.preventDefault();
-        handleSelect();
-      }}
+      onClick={handleSelect}
     >
-      {renderRelevanceIndicator()}
+      {renderRelevanceIndicator}
 
       <div className="hdc-dataset-content">
         {/* community action area */}
@@ -112,7 +111,7 @@ const DatasetCard = ({
                   ),
                 role: "button",
                 tabIndex: 0,
-                "aria-label": `Filter by community action area: ${communityActionArea}`,
+                "aria-label": `View details for community action area: ${communityActionArea}`,
               }
             : {})}
         >
@@ -146,7 +145,7 @@ const DatasetCard = ({
         {/* description */}
         <p className="hdc-dataset-description">{description}</p>
 
-        {renderMatchedFields()}
+        {renderMatchedFields}
 
         {/* attributes */}
         <div className="hdc-dataset-attributes">
@@ -160,7 +159,7 @@ const DatasetCard = ({
                     onClick: (e) => handleAttributeClick("source", source, e),
                     role: "button",
                     tabIndex: 0,
-                    "aria-label": `Filter by source: ${source}`,
+                    "aria-label": `View details for source: ${source}`,
                   }
                 : {})}
             >
@@ -180,7 +179,7 @@ const DatasetCard = ({
                       handleAttributeClick("dataFormat", dataFormat, e),
                     role: "button",
                     tabIndex: 0,
-                    "aria-label": `Filter by data format: ${dataFormat}`,
+                    "aria-label": `View details for data format: ${dataFormat}`,
                   }
                 : {})}
             >
@@ -199,7 +198,7 @@ const DatasetCard = ({
                     onClick: (e) => handleAttributeClick("type", type, e),
                     role: "button",
                     tabIndex: 0,
-                    "aria-label": `Filter by category: ${type}`,
+                    "aria-label": `View details for category: ${type}`,
                   }
                 : {})}
             >
@@ -219,7 +218,7 @@ const DatasetCard = ({
                       handleAttributeClick("dataTopic", dataTopic, e),
                     role: "button",
                     tabIndex: 0,
-                    "aria-label": `Filter by data topic: ${dataTopic}`,
+                    "aria-label": `View details for data topic: ${dataTopic}`,
                   }
                 : {})}
             >

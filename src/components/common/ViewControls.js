@@ -9,40 +9,45 @@ const ViewControls = ({
   resultCount,
   searchQuery,
   isTransitioning,
+  selectedDataset,
+  selectedAttribute,
+  onBackToCatalog,
 }) => {
-  const { selectedDataset, clearSelectedDataset } = useView();
+  /* view title helper */
+  const getTitle = () => {
+    if (selectedDataset) return "Dataset Information";
+    if (selectedAttribute) {
+      const t = selectedAttribute.type.replace(/([A-Z])/g, " $1");
+      return `${t.charAt(0).toUpperCase() + t.slice(1)} Information`;
+    }
+    if (searchQuery) return `Found ${resultCount} results for “${searchQuery}”`;
+    return `Showing ${resultCount} datasets`;
+  };
 
-  // Standard view controls structure - same container for both modes
+  const isDetailView = Boolean(selectedDataset || selectedAttribute);
+
   return (
     <div
       className={`hdc-controls-section ${
         isTransitioning ? "transitioning" : ""
-      } ${selectedDataset ? "detail-mode" : ""}`}
+      } ${isDetailView ? "detail-mode" : ""}`}
       role="region"
-      aria-label={selectedDataset ? "Dataset detail controls" : "View controls"}
+      aria-label={isDetailView ? "Detail view controls" : "View controls"}
     >
       <div className="hdc-controls-header">
         <div className="hdc-controls-left">
-          {selectedDataset ? (
-            <div className="hdc-results-info">Dataset Information</div>
-          ) : (
-            <div className="hdc-results-info">
-              {searchQuery
-                ? `Found ${resultCount} results for "${searchQuery}"`
-                : `Showing ${resultCount} datasets`}
-            </div>
-          )}
+          <div className="hdc-results-info">{getTitle()}</div>
         </div>
 
         <div className="hdc-controls-right">
-          {selectedDataset ? (
+          {isDetailView ? (
             <button
               className="hdc-back-button"
-              onClick={clearSelectedDataset}
-              aria-label="Back to dataset catalog"
+              onClick={onBackToCatalog}
+              aria-label="Back to catalog"
             >
+              {/* simple chevron icon */}
               <svg
-                xmlns="http://www.w3.org/2000/svg"
                 width="20"
                 height="20"
                 viewBox="0 0 24 24"
@@ -51,21 +56,18 @@ const ViewControls = ({
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                style={{ marginRight: "8px" }}
               >
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
+                <polyline points="15 18 9 12 15 6" />
               </svg>
-              Back to Catalog
+              Back to Catalog
             </button>
           ) : (
             <>
-              <span className="hdc-sort-label">Sort by:</span>
+              <span className="hdc-sort-label">Sort by:</span>
               <select
                 className="hdc-sort-select"
                 value={sortBy}
                 onChange={(e) => onSortChange(e.target.value)}
-                aria-label="Sort datasets by"
               >
                 <option value="relevance">Relevance</option>
                 <option value="date">Date updated</option>
@@ -78,50 +80,27 @@ const ViewControls = ({
                     viewMode === "grid" ? "active" : ""
                   }`}
                   onClick={() => onViewChange("grid")}
-                  aria-label="Grid view"
                   aria-pressed={viewMode === "grid"}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="3" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="14" width="7" height="7"></rect>
-                    <rect x="3" y="14" width="7" height="7"></rect>
+                  {/* grid icon */}
+                  <svg width="20" height="20" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
                   </svg>
                 </button>
+
                 <button
                   className={`hdc-view-button ${
                     viewMode === "detail" ? "active" : ""
                   }`}
                   onClick={() => onViewChange("detail")}
-                  aria-label="Detailed view"
                   aria-pressed={viewMode === "detail"}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
+                  {/* list icon */}
+                  <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </button>
               </div>

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useFilters } from "../../context/FilterContext";
+import { useView } from "../../context/ViewContext";
 
 const DatasetDetail = ({ dataset }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const { setFilterByAttribute, filterMappings } = useFilters();
+  const { filterMappings } = useFilters();
+  const { selectAttribute } = useView();
 
   /* ---------- loading transition ---------- */
   useEffect(() => {
@@ -12,7 +14,7 @@ const DatasetDetail = ({ dataset }) => {
     return () => clearTimeout(timer);
   }, [dataset?.id]);
 
-  /* ---------- early‐exit when nothing is selected ---------- */
+  /* ---------- early exit ---------- */
   if (!dataset) {
     return (
       <div className="hdc-dataset-detail-empty">
@@ -24,7 +26,8 @@ const DatasetDetail = ({ dataset }) => {
   /* ---------- helpers ---------- */
   const handleAttributeClick = (field, value, e) => {
     e.preventDefault();
-    setFilterByAttribute(field, value);
+    e.stopPropagation();
+    selectAttribute(field, value);
   };
 
   const isFilterable = (field) => Boolean(filterMappings[field]);
@@ -45,21 +48,17 @@ const DatasetDetail = ({ dataset }) => {
 
   const renderInfoItem = (label, field, value) => {
     if (!value) return null;
-
     const filterable = isFilterable(field);
-    const interactiveProps = filterable
-      ? {
-          onClick: (e) => handleAttributeClick(field, value, e),
-          role: "button",
-          tabIndex: 0,
-          "aria-label": `Filter catalog by ${label}: ${value}`,
-        }
-      : {};
 
     return (
       <div
         className={`hdc-info-item ${filterable ? "filterable" : ""}`}
-        {...interactiveProps}
+        {...(filterable && {
+          onClick: (e) => handleAttributeClick(field, value, e),
+          role: "button",
+          tabIndex: 0,
+          "aria-label": `View details for ${label}: ${value}`,
+        })}
       >
         <div className="hdc-info-label">{label}</div>
         <div className="hdc-info-value">{value}</div>
@@ -77,7 +76,7 @@ const DatasetDetail = ({ dataset }) => {
           </div>
         )}
 
-        {/* ----- header ----- */}
+        {/* header */}
         <div className="hdc-dataset-detail-header">
           <div
             className={`hdc-community-category ${
@@ -87,19 +86,17 @@ const DatasetDetail = ({ dataset }) => {
               backgroundColor: `${categoryColor}20`,
               borderColor: categoryColor,
             }}
-            {...(isFilterable("communityActionArea")
-              ? {
-                  onClick: (e) =>
-                    handleAttributeClick(
-                      "communityActionArea",
-                      dataset.communityActionArea,
-                      e
-                    ),
-                  role: "button",
-                  tabIndex: 0,
-                  "aria-label": `Filter catalog by Community Action Area: ${dataset.communityActionArea}`,
-                }
-              : {})}
+            {...(isFilterable("communityActionArea") && {
+              onClick: (e) =>
+                handleAttributeClick(
+                  "communityActionArea",
+                  dataset.communityActionArea,
+                  e
+                ),
+              role: "button",
+              tabIndex: 0,
+              "aria-label": `View details for Community Action Area: ${dataset.communityActionArea}`,
+            })}
           >
             <span
               className="hdc-category-dot"
@@ -113,7 +110,7 @@ const DatasetDetail = ({ dataset }) => {
           <h1 className="hdc-dataset-detail-title">{dataset.name}</h1>
         </div>
 
-        {/* ----- main content ----- */}
+        {/* content */}
         <div className="hdc-dataset-detail-content">
           <div className="hdc-dataset-detail-main">
             {/* description */}
@@ -130,10 +127,22 @@ const DatasetDetail = ({ dataset }) => {
               <div className="hdc-dataset-detail-info-grid">
                 {renderInfoItem("Source", "source", dataset.source)}
                 {renderInfoItem("Category", "type", dataset.type)}
-                {renderInfoItem("Data Format", "dataFormat", dataset.dataFormat)}
+                {renderInfoItem(
+                  "Data Format",
+                  "dataFormat",
+                  dataset.dataFormat
+                )}
                 {renderInfoItem("Data Topic", "dataTopic", dataset.dataTopic)}
-                {renderInfoItem("Date Created", "dateCreated", dataset.dateCreated)}
-                {renderInfoItem("Last Updated", "dateUpdated", dataset.dateUpdated)}
+                {renderInfoItem(
+                  "Date Created",
+                  "dateCreated",
+                  dataset.dateCreated
+                )}
+                {renderInfoItem(
+                  "Last Updated",
+                  "dateUpdated",
+                  dataset.dateUpdated
+                )}
               </div>
             </section>
 
@@ -141,6 +150,7 @@ const DatasetDetail = ({ dataset }) => {
             <section className="hdc-dataset-detail-section">
               <h2 className="hdc-section-title">Actions</h2>
               <div className="hdc-dataset-detail-actions">
+                {/* FIXED: anchor tag added + correct variable */}
                 <a
                   href={dataset.pageUrl || "#"}
                   className="hdc-dataset-action-button hdc-view-button"

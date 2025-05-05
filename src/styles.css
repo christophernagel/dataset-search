@@ -2324,7 +2324,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 
 .hdc-attribute.filterable:hover::after,
 .hdc-community-action-area.filterable:hover::after {
-  content: "Filter by this";
+  content: "View Details";
   position: absolute;
   bottom: calc(100% + 5px);
   left: 50%;
@@ -2358,7 +2358,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 }
 
 .hdc-info-item.filterable:hover::after {
-  content: "Return to catalog, filtered by this";
+  content: "View Details";
   display: block;
   font-size: var(--font-size-xs);
   color: var(--color-text-tertiary);
@@ -2370,7 +2370,7 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
 }
 
 .hdc-community-category.filterable:hover::after {
-  content: "Return to catalog, filtered by this category";
+  content: "View Details";
   position: absolute;
   bottom: -24px;
   left: 50%;
@@ -2400,5 +2400,132 @@ body .hdc-dataset-catalog .hdc-search-input::placeholder,
   .hdc-info-item.filterable {
     padding: 8px 12px;
     margin: -8px -12px;
+  }
+}
+/* ===========================================================
+   Attribute Detail View Styles
+=========================================================== */
+.hdc-attribute-detail-wrapper {
+  width: 100%;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.hdc-attribute-detail {
+  position: relative;
+  width: 100%;
+  max-width: 1200px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: var(--spacing-l);
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-lg);
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  box-sizing: border-box;
+}
+
+.hdc-attribute-detail.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hdc-attribute-detail-header {
+  margin-bottom: var(--spacing-l);
+  padding-bottom: var(--spacing-m);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hdc-attribute-category {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 1px solid;
+  margin-bottom: 12px;
+}
+
+.hdc-attribute-type {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.hdc-attribute-detail-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.hdc-attribute-detail-content {
+  display: flex;
+  gap: var(--spacing-xl);
+}
+
+.hdc-attribute-detail-main {
+  flex: 1;
+}
+
+.hdc-attribute-detail-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.hdc-attribute-detail-description {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.hdc-attribute-detail-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: var(--spacing-l) var(--spacing-m);
+  max-width: 100%;
+}
+
+.hdc-attribute-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-m);
+}
+
+.hdc-attribute-action-button {
+  padding: 10px var(--spacing-m);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hdc-attribute-datasets-section {
+  margin-top: var(--spacing-xl);
+}
+
+.hdc-attribute-datasets-count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-m);
+}
+
+/* Hover states for attribute detail links */
+.hdc-attribute-detail a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hdc-attribute-detail {
+    padding: var(--spacing-m);
+  }
+
+  .hdc-attribute-detail-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hdc-attribute-detail-title {
+    font-size: 24px;
   }
 }

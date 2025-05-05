@@ -14,9 +14,12 @@ const SearchHome = ({ searchService, onSearch }) => {
     onSearch(query);
   };
 
+  // Handle the "View All Datasets" action
   const handleViewAllDatasets = () => {
-    // Navigate to search results with empty query to show all datasets
+    // Clear any search query
     setSearchQuery("");
+    // Call the onSearch handler with empty string
+    // This signals to navigate to search results without a query
     onSearch("");
   };
 
