@@ -37,88 +37,90 @@ const DatasetDetail = ({ dataset }) => {
   const categoryColor = getCategoryColor(dataset.communityActionArea);
 
   return (
-    <div className={`hdc-dataset-detail ${isLoading ? "loading" : "loaded"}`}>
-      {isLoading && (
-        <div className="hdc-loading-overlay">
-          <div className="hdc-loading-spinner"></div>
-        </div>
-      )}
-
-      <div className="hdc-dataset-detail-header">
-        <div
-          className="hdc-community-category"
-          style={{
-            backgroundColor: `${categoryColor}20`,
-            borderColor: categoryColor,
-          }}
-        >
-          <span
-            className="hdc-category-dot"
-            style={{ backgroundColor: categoryColor }}
-          ></span>
-          <span className="hdc-category-label">
-            {dataset.communityActionArea}
-          </span>
-        </div>
-        <h1 className="hdc-dataset-detail-title">{dataset.name}</h1>
-      </div>
-
-      <div className="hdc-dataset-detail-content">
-        <div className="hdc-dataset-detail-main">
-          <div className="hdc-dataset-detail-section">
-            <h2 className="hdc-section-title">Description</h2>
-            <p className="hdc-dataset-detail-description">
-              {dataset.description}
-            </p>
+    <div className="hdc-dataset-detail-wrapper">
+      <div className={`hdc-dataset-detail ${isLoading ? "loading" : "loaded"}`}>
+        {isLoading && (
+          <div className="hdc-loading-overlay">
+            <div className="hdc-loading-spinner"></div>
           </div>
+        )}
 
-          <div className="hdc-dataset-detail-section">
-            <h2 className="hdc-section-title">Dataset Information</h2>
-            <div className="hdc-dataset-detail-info-grid">
-              <div className="hdc-info-item">
-                <div className="hdc-info-label">Source</div>
-                <div className="hdc-info-value">{dataset.source}</div>
-              </div>
-              <div className="hdc-info-item">
-                <div className="hdc-info-label">Category</div>
-                <div className="hdc-info-value">{dataset.type}</div>
-              </div>
-              <div className="hdc-info-item">
-                <div className="hdc-info-label">Data Format</div>
-                <div className="hdc-info-value">{dataset.dataFormat}</div>
-              </div>
-              <div className="hdc-info-item">
-                <div className="hdc-info-label">Date Created</div>
-                <div className="hdc-info-value">{dataset.dateCreated}</div>
-              </div>
-              <div className="hdc-info-item">
-                <div className="hdc-info-label">Last Updated</div>
-                <div className="hdc-info-value">{dataset.dateUpdated}</div>
-              </div>
-              {dataset.dataTopic && (
-                <div className="hdc-info-item">
-                  <div className="hdc-info-label">Data Topic</div>
-                  <div className="hdc-info-value">{dataset.dataTopic}</div>
-                </div>
-              )}
+        <div className="hdc-dataset-detail-header">
+          <div
+            className="hdc-community-category"
+            style={{
+              backgroundColor: `${categoryColor}20`,
+              borderColor: categoryColor,
+            }}
+          >
+            <span
+              className="hdc-category-dot"
+              style={{ backgroundColor: categoryColor }}
+            ></span>
+            <span className="hdc-category-label">
+              {dataset.communityActionArea}
+            </span>
+          </div>
+          <h1 className="hdc-dataset-detail-title">{dataset.name}</h1>
+        </div>
+
+        <div className="hdc-dataset-detail-content">
+          <div className="hdc-dataset-detail-main">
+            <div className="hdc-dataset-detail-section">
+              <h2 className="hdc-section-title">Description</h2>
+              <p className="hdc-dataset-detail-description">
+                {dataset.description}
+              </p>
             </div>
-          </div>
 
-          <div className="hdc-dataset-detail-section">
-            <h2 className="hdc-section-title">Actions</h2>
-            <div className="hdc-dataset-detail-actions">
-              <a
-                href={dataset.pageUrl || "#"}
-                className="hdc-dataset-action-button hdc-view-button"
-                onClick={(e) => {
-                  if (!dataset.pageUrl) e.preventDefault();
-                }}
-              >
-                View Source Data
-              </a>
-              <button className="hdc-dataset-action-button hdc-secondary-button">
-                Download Dataset
-              </button>
+            <div className="hdc-dataset-detail-section">
+              <h2 className="hdc-section-title">Dataset Information</h2>
+              <div className="hdc-dataset-detail-info-grid">
+                <div className="hdc-info-item">
+                  <div className="hdc-info-label">Source</div>
+                  <div className="hdc-info-value">{dataset.source}</div>
+                </div>
+                <div className="hdc-info-item">
+                  <div className="hdc-info-label">Category</div>
+                  <div className="hdc-info-value">{dataset.type}</div>
+                </div>
+                <div className="hdc-info-item">
+                  <div className="hdc-info-label">Data Format</div>
+                  <div className="hdc-info-value">{dataset.dataFormat}</div>
+                </div>
+                <div className="hdc-info-item">
+                  <div className="hdc-info-label">Date Created</div>
+                  <div className="hdc-info-value">{dataset.dateCreated}</div>
+                </div>
+                <div className="hdc-info-item">
+                  <div className="hdc-info-label">Last Updated</div>
+                  <div className="hdc-info-value">{dataset.dateUpdated}</div>
+                </div>
+                {dataset.dataTopic && (
+                  <div className="hdc-info-item">
+                    <div className="hdc-info-label">Data Topic</div>
+                    <div className="hdc-info-value">{dataset.dataTopic}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="hdc-dataset-detail-section">
+              <h2 className="hdc-section-title">Actions</h2>
+              <div className="hdc-dataset-detail-actions">
+                <a
+                  href={dataset.pageUrl || "#"}
+                  className="hdc-dataset-action-button hdc-view-button"
+                  onClick={(e) => {
+                    if (!dataset.pageUrl) e.preventDefault();
+                  }}
+                >
+                  View Source Data
+                </a>
+                <button className="hdc-dataset-action-button hdc-secondary-button">
+                  Download Dataset
+                </button>
+              </div>
             </div>
           </div>
         </div>
